@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PL Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("pref_theme") || "dark";
+            if (savedTheme === "light") {
+                document.documentElement.classList.add("light-mode");
+            } else if (savedTheme === "system") {
+                if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+                    document.documentElement.classList.add("light-mode");
+                }
+            }
+        })();
+    </script>
+</head>
+
+<body>
+
+
+    <!-- Global Connection Status / Network Unreachable Screen -->
+    <div id="setup-screen" class="screen hidden">
+        <div class="glass-card compact-card fade-in">
+            <h2>Server Connection Setup</h2>
+            <p class="subtitle">Enter the IP and Port of the Host PC running the PL Tracker Server.</p>
+
+            <div class="input-group">
+                <label for="setup-ip">Host Server IP</label>
+                <input type="text" id="setup-ip" placeholder="e.g. 192.168.1.100" value="127.0.0.1">
+                <span class="error-text" id="setup-ip-error"></span>
+            </div>
+
+            <div class="input-group">
+                <label for="setup-port">Server Port</label>
+                <input type="number" id="setup-port" placeholder="e.g. 5000" value="5000">
+                <span class="error-text" id="setup-port-error"></span>
+            </div>
+
+            <button id="save-setup-btn" class="primary-btn">Test & Connect</button>
+            <p class="status-msg text-center mt-3" id="setup-status"></p>
+        </div>
+    </div>
+
+    <!-- First-Time Admin Setup Screen -->
+    <div id="first-time-screen" class="screen hidden">
+        <div class="glass-card compact-card fade-in">
+            <div class="badge admin-badge">First-Time Setup</div>
+            <h2>Create Admin Account</h2>
+            <p class="subtitle">No users found in database. Please create the initial Administrator account.</p>
+
+            <div class="input-group">
+                <label for="admin-setup-username">Username</label>
+                <input type="text" id="admin-setup-username" placeholder="Enter username">
+                <span class="error-text" id="admin-setup-username-error"></span>
+            </div>
+
+            <div class="input-group">
+                <label for="admin-setup-password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="admin-setup-password" placeholder="Enter password">
+                    <button type="button" class="toggle-password-btn" data-target="admin-setup-password">Show</button>
+                </div>
+                <span class="error-text" id="admin-setup-password-error"></span>
+            </div>
+
+            <button id="create-admin-btn" class="primary-btn">Initialize App</button>
+            <p class="status-msg text-center mt-3" id="first-time-status"></p>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen">
+        <div class="glass-card compact-card fade-in login-card">
+            <div class="login-header-section text-center">
+                <div class="login-logo-box">
+                    <svg class="logo-icon-svg login-logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.778zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+                    </svg>
+                </div>
+                <h1 class="login-brand-title"><span class="logo-accent">PL</span> Tracker</h1>
+                <p class="subtitle">Please sign in to manage Packing Lists</p>
+            </div>
+
+            <form id="login-form" onsubmit="return false;">
+                <div class="input-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" autocomplete="username">
+                    <span class="error-text" id="login-username-error"></span>
+                </div>
+
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="login-password" autocomplete="current-password">
+                        <button type="button" class="toggle-password-btn" data-target="login-password">Show</button>
+                    </div>
+                    <span class="error-text" id="login-password-error"></span>
+                </div>
+
+                <div class="form-row justify-between mb-4">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="remember-me">
+                        <span class="checkmark"></span>
+                        Remember my username
+                    </label>
+                </div>
+
+                <button type="submit" id="login-btn" class="primary-btn btn-lg w-full">Sign In</button>
+            </form>
+
+            <div class="register-link mt-4 text-center">
+                Need a new account? <a href="#" id="go-to-register-btn">Request Signup</a>
+            </div>
+
+            <p class="status-msg text-center mt-3" id="login-status"></p>
+        </div>
+    </div>
+
+    <!-- Registration Screen (Requires Admin Authorization) -->
+    <div id="register-screen" class="screen hidden">
+        <div class="glass-card fade-in">
+            <h2>User Registration</h2>
+            <p class="subtitle">New account creation requires Administrator authorization.</p>
+
+            <div class="form-grid">
+                <!-- Admin Credentials Verification -->
+                <div class="grid-section">
+                    <h3>1. Admin Authorization</h3>
+                    <div class="input-group">
+                        <label for="reg-admin-username">Admin Username</label>
+                        <input type="text" id="reg-admin-username" placeholder="Verify Admin Username">
+                        <span class="error-text" id="reg-admin-username-error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg-admin-password">Admin Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="reg-admin-password" placeholder="Verify Admin Password">
+                            <button type="button" class="toggle-password-btn"
+                                data-target="reg-admin-password">Show</button>
+                        </div>
+                        <span class="error-text" id="reg-admin-password-error"></span>
+                    </div>
+                </div>
+
+                <!-- New User Details -->
+                <div class="grid-section">
+                    <h3>2. New Account Details</h3>
+                    <div class="input-group">
+                        <label for="reg-new-username">New Username</label>
+                        <input type="text" id="reg-new-username" placeholder="Choose username">
+                        <span class="error-text" id="reg-new-username-error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg-new-password">New Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="reg-new-password" placeholder="Create password">
+                            <button type="button" class="toggle-password-btn"
+                                data-target="reg-new-password">Show</button>
+                        </div>
+                        <span class="error-text" id="reg-new-password-error"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg-new-role">Role</label>
+                        <select id="reg-new-role">
+                            <option value="Local">Local User</option>
+                            <option value="Admin">Administrator</option>
+                        </select>
+                        <span class="error-text" id="reg-new-role-error"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions mt-4 justify-center" style="display: flex; gap: 12px; justify-content: center;">
+                <button id="register-btn" class="primary-btn btn-lg px-4">Create User Account</button>
+                <button id="cancel-register-btn" class="secondary-btn btn-lg px-4">Cancel</button>
+            </div>
+            <p class="status-msg text-center mt-3" id="register-status"></p>
+        </div>
+    </div>
+
+    <!-- Main Workspace Application -->
+    <div id="main-app" class="screen hidden main-app-container">
+
+        <!-- Antigravity IDE Top Menu & Title Bar -->
+        <div id="ide-top-bar" class="ide-top-bar">
+            <div class="ide-top-left">
+                <div class="ide-app-logo">
+                    <svg class="ide-logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.778zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+                    </svg>
+                    <span class="ide-brand-name">PL Tracker</span>
+                </div>
+                <nav class="ide-menu-nav">
+                    <div class="ide-menu-item">
+                        <button type="button" class="ide-menu-btn" data-menu="file">File</button>
+                        <div class="ide-dropdown-menu hidden" id="menu-dropdown-file">
+                            <div class="ide-menu-action" id="menu-action-clear"><span class="action-text">Clear
+                                    Form</span><kbd>Ctrl+L</kbd></div>
+                            <div class="ide-menu-divider"></div>
+                            <div class="ide-menu-action" id="menu-action-import-excel" style="display:none;"><span
+                                    class="action-text">Import
+                                    Excel Data (.xlsm)</span></div>
+                            <div class="ide-menu-action" id="menu-action-export-csv"><span class="action-text">Export
+                                    CSV Report</span><kbd>Ctrl+E</kbd></div>
+                            <div class="ide-menu-divider"></div>
+                            <div class="ide-menu-action" id="menu-action-logout"><span class="action-text">Sign
+                                    Out</span><kbd>Alt+Q</kbd></div>
+                        </div>
+                    </div>
+
+                    <div class="ide-menu-item">
+                        <button type="button" class="ide-menu-btn" data-menu="edit">Edit</button>
+                        <div class="ide-dropdown-menu hidden" id="menu-dropdown-edit">
+                            <div class="ide-menu-action" id="menu-action-toggle-search"><span class="action-text">Search
+                                    Mode</span><kbd>F11</kbd></div>
+                            <div class="ide-menu-action" id="menu-action-bulk-edit"><span class="action-text">Bulk Edit
+                                    Selected</span><kbd>Ctrl+Shift+B</kbd></div>
+                        </div>
+                    </div>
+
+                    <div class="ide-menu-item">
+                        <button type="button" class="ide-menu-btn" data-menu="selection">Selection</button>
+                        <div class="ide-dropdown-menu hidden" id="menu-dropdown-selection">
+                            <div class="ide-menu-action" id="menu-action-select-all"><span class="action-text">Select
+                                    All Rows</span><kbd>Ctrl+A</kbd></div>
+                        </div>
+                    </div>
+
+                    <div class="ide-menu-item">
+                        <button type="button" class="ide-menu-btn" data-menu="view">View</button>
+                        <div class="ide-dropdown-menu hidden" id="menu-dropdown-view">
+                            <div class="ide-menu-action" id="menu-action-toggle-sidebar"><span
+                                    class="action-text">Toggle Sidebar</span><kbd>Ctrl+B</kbd></div>
+                            <div class="ide-menu-action" id="menu-action-toggle-theme"><span class="action-text">Toggle
+                                    Dark / Light Theme</span><kbd>Ctrl+K</kbd></div>
+                        </div>
+                    </div>
+
+                    <div class="ide-menu-item">
+                        <button type="button" class="ide-menu-btn" data-menu="go">Go</button>
+                        <div class="ide-dropdown-menu hidden" id="menu-dropdown-go">
+                            <div class="ide-menu-action" id="menu-go-entry"><span class="action-text">Entry
+                                    Form</span><kbd>Ctrl+1</kbd></div>
+                            <div class="ide-menu-action" id="menu-go-entries"><span class="action-text">Previous
+                                    Entries</span><kbd>Ctrl+2</kbd></div>
+                            <div class="ide-menu-action" id="menu-go-dashboard"><span
+                                    class="action-text">Dashboard</span><kbd>Ctrl+3</kbd></div>
+                            <div class="ide-menu-action" id="menu-go-reports"><span
+                                    class="action-text">Reports</span><kbd>Ctrl+4</kbd></div>
+                            <div class="ide-menu-action" id="menu-go-settings"><span
+                                    class="action-text">Settings</span><kbd>Ctrl+5</kbd></div>
+                        </div>
+                    </div>
+
+                    <div class="ide-menu-item">
+                        <button type="button" class="ide-menu-btn" data-menu="run">Run</button>
+                        <div class="ide-dropdown-menu hidden" id="menu-dropdown-run">
+                            <div class="ide-menu-action" id="menu-action-submit"><span class="action-text">Submit Active
+                                    Entry</span><kbd>Ctrl+Enter</kbd></div>
+                        </div>
+                    </div>
+
+                    <div class="ide-menu-item">
+                        <button type="button" class="ide-menu-btn" data-menu="help">Help</button>
+                        <div class="ide-dropdown-menu hidden" id="menu-dropdown-help">
+                            <div class="ide-menu-action" id="menu-action-about"><span class="action-text">About PL
+                                    Tracker</span></div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="ide-top-right">
+                <button type="button" id="theme-toggle-btn" class="icon-only-btn ide-theme-icon-btn"
+                    title="Toggle Theme (Dark / Light)">
+                    <svg id="theme-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="app-layout-body">
+            <!-- Single Collapsible / Expandable Sidebar Navigation -->
+            <aside class="app-sidebar" id="app-sidebar">
+                <div class="sidebar-top">
+                    <button type="button" id="sidebar-collapse-btn" class="sidebar-toggle-btn"
+                        title="Toggle Sidebar (Ctrl+B)" aria-label="Toggle Sidebar">
+                        <svg class="toggle-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                    </button>
+                </div>
+
+                <nav class="sidebar-navigation">
+                    <button class="tab-btn active" data-tab="entry-form-tab" title="Entry Form (Ctrl+1)">
+                        <span class="tab-icon">
+                            <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                        </span>
+                        <span class="tab-text">Entry Form</span>
+                    </button>
+                    <button class="tab-btn" data-tab="previous-entries-tab" title="Previous Entries (Ctrl+2)">
+                        <span class="tab-icon">
+                            <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>
+                        </span>
+                        <span class="tab-text">Previous Entries</span>
+                    </button>
+                    <button class="tab-btn" data-tab="dashboard-tab" title="Dashboard Analytics (Ctrl+3)">
+                        <span class="tab-icon">
+                            <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="9" />
+                                <rect x="14" y="3" width="7" height="5" />
+                                <rect x="14" y="12" width="7" height="9" />
+                                <rect x="3" y="16" width="7" height="5" />
+                            </svg>
+                        </span>
+                        <span class="tab-text">Dashboard</span>
+                    </button>
+                    <button class="tab-btn" data-tab="report-tab" title="Report Generator (Ctrl+4)">
+                        <span class="tab-icon">
+                            <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10" />
+                                <line x1="12" y1="20" x2="12" y2="4" />
+                                <line x1="6" y1="20" x2="6" y2="14" />
+                            </svg>
+                        </span>
+                        <span class="tab-text">Report Generator</span>
+                    </button>
+                    <button class="tab-btn" data-tab="settings-tab" title="Settings (Ctrl+5)">
+                        <span class="tab-icon">
+                            <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3" />
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                            </svg>
+                        </span>
+                        <span class="tab-text">Settings</span>
+                    </button>
+                </nav>
+
+                <div class="sidebar-bottom">
+                    <div class="user-profile">
+                        <div class="user-avatar-circle">
+                            <span id="user-avatar-initial">U</span>
+                        </div>
+                        <div class="user-info-text">
+                            <div id="username-display" class="username">Username</div>
+                            <span id="user-badge" class="badge">Role</span>
+                        </div>
+                    </div>
+                    <button id="logout-btn" class="logout-btn w-full mt-3" title="Sign Out">
+                        <span class="logout-icon-span">
+                            <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
+                        </span>
+                        <span class="logout-text-span">Logout</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Right Side Main Body Wrapper -->
+            <div class="app-main-content">
+                <!-- Connection Status Indicator (referenced by app.js showStatusIndicator) -->
+                <div id="connection-indicator" class="connection-status hidden">
+                    <span class="dot green"></span>
+                    <span class="status-text">Connected</span>
+                </div>
+                <main class="app-body">
+
+                    <!-- TAB 1: Entry Form -->
+                    <section id="entry-form-tab" class="tab-content">
+                        <div class="entry-layout">
+                            <!-- Form entry card -->
+                            <div class="glass-card main-form-card">
+                                <div class="form-header">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <h2 id="form-title">New Packing List Entry</h2>
+                                        <div id="search-mode-badge" class="badge search-badge hidden">SEARCH MODE ACTIVE
+                                            (F11)</div>
+                                    </div>
+                                </div>
+
+                                <form id="entry-form" onsubmit="return false;">
+                                    <div class="form-grid-3">
+
+                                        <div class="input-group">
+                                            <label for="entry-workorder">Work-Order</label>
+                                            <input type="text" id="entry-workorder" maxlength="9">
+                                            <span class="error-text" id="entry-workorder-error"></span>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <label for="entry-packno">Pack No.</label>
+                                            <input type="text" id="entry-packno" maxlength="5">
+                                            <span class="error-text" id="entry-packno-error"></span>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <label for="entry-pltype">PL Type</label>
+                                            <select id="entry-pltype">
+                                                <option value="">Select PL Type</option>
+                                                <option value="New">New</option>
+                                                <option value="Add">Add</option>
+                                                <option value="Update">Update</option>
+                                                <option value="Revise">Revise</option>
+                                                <option value="R2">R2</option>
+                                                <option value="Delete">Delete</option>
+                                            </select>
+                                            <span class="error-text" id="entry-pltype-error"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-grid-3">
+
+                                        <div class="input-group relative-container">
+                                            <!-- Dynamic notification block for Revise selection -->
+                                            <div id="revise-notification" class="bubble-notification hidden">
+                                                because of wrong
+                                            </div>
+                                            <label for="entry-subpltype">Sub PL Type</label>
+                                            <select id="entry-subpltype">
+                                                <option value="">Select Sub Type</option>
+                                            </select>
+                                            <span class="error-text" id="entry-subpltype-error"></span>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <label for="entry-location">Location</label>
+                                            <select id="entry-location">
+                                                <option value="">Select Location</option>
+                                                <option value="B1 GF">B1 GF</option>
+                                                <option value="B1 FF">B1 FF</option>
+                                                <option value="B2 GF">B2 GF</option>
+                                                <option value="B2 FF">B2 FF</option>
+                                                <option value="B2 HF">B2 HF</option>
+                                                <option value="B2 EF">B2 EF</option>
+                                                <option value="KW GF">KW GF</option>
+                                                <option value="OS">OS</option>
+                                            </select>
+                                            <span class="error-text" id="entry-location-error"></span>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <label for="entry-customer">Customer</label>
+                                            <select id="entry-customer">
+                                                <option value="">Select Customer</option>
+                                                <option value="AEO">AEO</option>
+                                                <option value="Inditex">Inditex</option>
+                                                <option value="Stacy">Stacy</option>
+                                                <option value="League">League</option>
+                                                <option value="VSS">VSS</option>
+                                            </select>
+                                            <span class="error-text" id="entry-customer-error"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="input-group mb-3">
+                                        <label>PL Mode</label>
+                                        <div class="mode-checkbox-group"
+                                            style="display: flex; gap: 24px; align-items: center; background: rgba(255,255,255,0.03); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--sidebar-border); margin-top: 4px;">
+                                            <label class="checkbox-container"
+                                                style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                                                <input type="checkbox" id="mode-mail" name="pl-mode" value="Mail">
+                                                <span class="checkmark"></span>
+                                                <span style="font-weight: 600; font-size: 0.95rem;">Mail</span>
+                                            </label>
+                                            <label class="checkbox-container"
+                                                style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                                                <input type="checkbox" id="mode-manual" name="pl-mode" value="Manual"
+                                                    checked>
+                                                <span class="checkmark"></span>
+                                                <span style="font-weight: 600; font-size: 0.95rem;">Manual</span>
+                                            </label>
+                                        </div>
+                                        <span class="error-text" id="entry-mode-error"></span>
+                                    </div>
+
+                                    <div class="form-grid-2">
+                                        <div class="input-group">
+                                            <label for="entry-date">Date (YYYY-MM-DD)</label>
+                                            <input type="text" id="entry-date">
+                                            <span class="error-text" id="entry-date-error"></span>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <label for="entry-time">Time (HH:MM)</label>
+                                            <div class="time-input-container">
+                                                <input type="text" id="entry-time">
+                                                <span id="time-helper" class="time-helper-label">Time: -- : --</span>
+                                            </div>
+                                            <span class="error-text" id="entry-time-error"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Buttons Section -->
+                                    <div class="form-actions-row">
+                                        <div class="action-buttons-group">
+                                            <button type="button" id="submit-entry-btn" class="primary-btn"
+                                                title="Ctrl+Enter">Submit</button>
+                                            <button type="button" id="update-entry-btn" class="info-btn hidden"
+                                                title="Ctrl+Enter">Update</button>
+                                            <button type="button" id="delete-entry-btn" class="danger-btn hidden"
+                                                title="Ctrl+Delete">Delete</button>
+                                            <button type="button" id="save-new-btn" class="secondary-btn hidden"
+                                                title="Ctrl+Shift+Enter">Save as New</button>
+                                            <button type="button" id="clear-form-btn" class="dark-btn"
+                                                title="Delete">Clear</button>
+                                            <button type="button" id="toggle-search-btn" class="search-btn"
+                                                title="F11">Search Mode</button>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Navigating entries in search mode -->
+                                    <div id="search-nav-controls" class="search-nav-bar hidden">
+                                        <button type="button" id="prev-record-btn" class="nav-arrow-btn">◀ Previous
+                                            Record</button>
+                                        <span id="search-index-display" class="record-counter">Record 0 of 0</span>
+                                        <button type="button" id="next-record-btn" class="nav-arrow-btn">Next Record
+                                            ▶</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Metadata sidebar showing generated IDs for the last submitted / active record -->
+                            <div class="glass-card meta-display-card">
+                                <h3>Tracking & Metadata</h3>
+                                <p class="meta-desc">These values are generated securely by the Server upon write.</p>
+
+                                <div class="meta-grid">
+                                    <div class="meta-item">
+                                        <span class="meta-label">Master Unique ID</span>
+                                        <span id="meta-master-id" class="meta-val">—</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-label">Unique ID by User</span>
+                                        <span id="meta-user-id" class="meta-val">—</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-label">Master Unique ID by Day</span>
+                                        <span id="meta-day-id" class="meta-val">—</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-label">Unique ID by Day by User</span>
+                                        <span id="meta-day-user-id" class="meta-val">—</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-label">PC IP Address</span>
+                                        <span id="meta-pc-ip" class="meta-val">—</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-label">Submitted By</span>
+                                        <span id="meta-submitted-by" class="meta-val">—</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Live Activity Logs Feed -->
+                            <div class="glass-card live-activity-card mt-3">
+                                <div class="card-header-row">
+                                    <h3>Office Live Activity Feed</h3>
+                                    <span class="live-indicator"><span class="pulse-dot"></span>LIVE</span>
+                                </div>
+                                <div class="activity-feed-container" id="live-activity-feed">
+                                    <p class="no-activity">No active scans logged yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 2: Previous Entry Form (Spreadsheet view) -->
+                    <section id="previous-entries-tab" class="tab-content hidden">
+                        <div class="spreadsheet-container glass-card">
+                            <!-- Table actions and quick filters -->
+                            <div class="table-toolbar">
+                                <div class="toolbar-left">
+                                    <button id="bulk-modify-dropdown-btn" class="dropdown-trigger-btn">Modify / Delete
+                                        Selected ▾</button>
+                                    <div id="bulk-dropdown-menu" class="dropdown-menu hidden">
+                                        <button id="bulk-edit-btn">Bulk Modify Selected</button>
+                                        <button id="bulk-delete-btn" class="menu-danger-btn">Delete Selected</button>
+                                    </div>
+                                    <span class="selection-status-label" id="selection-status">0 rows selected</span>
+                                </div>
+
+                                <!-- Quick Filters Swatches -->
+                                <div class="quick-filter-swatches">
+                                    <span class="swatch-label">Quick:</span>
+                                    <button class="swatch-btn active" data-range="all">All</button>
+                                    <button class="swatch-btn" data-range="hour">1 Hour</button>
+                                    <button class="swatch-btn" data-range="today">Today</button>
+                                    <button class="swatch-btn" data-range="yesterday">Yesterday</button>
+                                    <button class="swatch-btn" data-range="week">This Week</button>
+                                    <button class="swatch-btn" data-range="month">This Month</button>
+                                </div>
+                            </div>
+
+                            <!-- Custom Search / Date Boundaries -->
+                            <div class="filter-search-row">
+                                <div class="input-inline">
+                                    <input type="text" id="sheet-search"
+                                        placeholder="Search by WO, Pack, Customer, Location...">
+                                </div>
+                                <div class="input-inline">
+                                    <label>From:</label>
+                                    <input type="date" id="sheet-start-date">
+                                </div>
+                                <div class="input-inline">
+                                    <label>To:</label>
+                                    <input type="date" id="sheet-end-date">
+                                </div>
+                                <button id="sheet-filter-btn" class="primary-btn compact-btn">Apply</button>
+                                <button id="sheet-clear-btn" class="secondary-btn compact-btn">Reset</button>
+                            </div>
+
+                            <!-- Spreadsheet Table Wrapper -->
+                            <div class="table-wrapper">
+                                <table id="entries-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="sortable" data-sort="MasterUniqueID">Master ID</th>
+                                            <th class="sortable" data-sort="UniqueIDByUser">User ID</th>
+                                            <th class="sortable" data-sort="DailyCountID">Daily ID</th>
+                                            <th class="sortable" data-sort="UniqueIDByDayByUser">User Daily</th>
+                                            <th class="sortable" data-sort="WorkOrder">Work Order</th>
+                                            <th class="sortable" data-sort="PackNo">Pack No</th>
+                                            <th class="sortable" data-sort="PLType">PL Type</th>
+                                            <th class="sortable" data-sort="SubPLType">Sub PL Type</th>
+                                            <th class="sortable" data-sort="Location">Location</th>
+                                            <th class="sortable" data-sort="Customer">Customer</th>
+                                            <th class="sortable" data-sort="EntryTimestamp">Timestamp</th>
+                                            <th class="sortable" data-sort="Username">Operator</th>
+                                            <th class="sortable" data-sort="SourcePC_IP">Source IP</th>
+                                            <th class="text-center width-50"><input type="checkbox"
+                                                    id="select-all-entries">
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="entries-table-body">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination Controls -->
+                            <div id="spreadsheet-pagination" class="pagination-controls hidden">
+                                <button id="prev-page-btn" class="secondary-btn compact-btn">◀ Previous</button>
+                                <span id="page-info" class="page-info-text">Page 1 of 1</span>
+                                <button id="next-page-btn" class="secondary-btn compact-btn">Next ▶</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 3: Dashboard (Analytical Tool) -->
+                    <section id="dashboard-tab" class="tab-content hidden">
+                        <div class="dashboard-container">
+                            <!-- Sub-Tab Navigation Header -->
+                            <div class="dashboard-subtab-bar">
+                                <div class="subtab-buttons-group">
+                                    <button class="dash-subtab-btn active" data-dash-subtab="user-tab">
+                                        <svg class="subtab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                            <circle cx="12" cy="7" r="4" />
+                                        </svg>
+                                        <span>User Analytics</span>
+                                    </button>
+                                    <button class="dash-subtab-btn" data-dash-subtab="location-tab">
+                                        <svg class="subtab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                            <circle cx="12" cy="10" r="3" />
+                                        </svg>
+                                        <span>Location Analytics</span>
+                                    </button>
+                                </div>
+                                <button id="dash-manual-refresh-btn" class="secondary-btn compact-btn dash-refresh-btn"
+                                    title="Refresh Analytics Data">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        width="14" height="14" class="btn-svg-icon">
+                                        <path d="M23 4v6h-6" />
+                                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                                    </svg>
+                                    <span>Refresh Data</span>
+                                </button>
+                            </div>
+
+                            <!-- SUB-TAB CONTENT: USER -->
+                            <div id="user-tab-content" class="dash-subtab-content active">
+                                <!-- Filters & Interactivity Bar -->
+                                <div class="glass-card filter-bar">
+                                    <div class="filter-group">
+                                        <label for="dash-user-filter">
+                                            <svg class="filter-icon" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                                <circle cx="12" cy="7" r="4" />
+                                            </svg>
+                                            User:
+                                        </label>
+                                        <select id="dash-user-filter" class="filter-select">
+                                            <option value="all">All Users</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="filter-group">
+                                        <label for="dash-date-filter">
+                                            <svg class="filter-icon" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                                <line x1="16" y1="2" x2="16" y2="6" />
+                                                <line x1="8" y1="2" x2="8" y2="6" />
+                                                <line x1="3" y1="10" x2="21" y2="10" />
+                                            </svg>
+                                            Date & Time:
+                                        </label>
+                                        <select id="dash-date-filter" class="filter-select">
+                                            <option value="all">Total / All-time</option>
+                                            <option value="today">Today</option>
+                                            <option value="7days">Last 7 Days</option>
+                                            <option value="30days">Last 30 Days</option>
+                                            <option value="custom">Custom Date Range</option>
+                                        </select>
+                                    </div>
+
+                                    <div id="dash-custom-date-group" class="filter-group hidden">
+                                        <label for="dash-start-date">From:</label>
+                                        <input type="date" id="dash-start-date" class="filter-date-input">
+                                        <label for="dash-end-date">To:</label>
+                                        <input type="date" id="dash-end-date" class="filter-date-input">
+                                    </div>
+
+                                    <div class="filter-actions">
+                                        <button id="dash-apply-filter-btn" class="primary-btn sm-btn">Apply
+                                            Filter</button>
+                                        <button id="dash-reset-filter-btn" class="secondary-btn sm-btn">Reset</button>
+                                    </div>
+                                </div>
+
+                                <!-- Visualizations Layout (Unified Single Box Design) -->
+                                <div class="analytics-charts-grid mt-4">
+                                    <div class="glass-card chart-container full-width-chart">
+                                        <div class="chart-header">
+                                            <div class="chart-title-group">
+                                                <h3 id="user-chart-title">Data Trends Over Time</h3>
+                                                <p class="chart-subtitle" id="user-chart-subtitle">Timeline view of
+                                                    packing list creation trends over selected period</p>
+                                            </div>
+                                            <div class="chart-controls">
+                                                <div id="user-category-select-wrapper" class="category-select-wrapper">
+                                                    <label for="user-breakdown-category" class="select-label">Data
+                                                        Field:</label>
+                                                    <select id="user-breakdown-category"
+                                                        class="filter-select select-sm">
+                                                        <option value="overall">Overall Volume</option>
+                                                        <option value="pl_type">PL Type</option>
+                                                        <option value="sub_pl_type">Sub PL Type</option>
+                                                        <option value="combined_pl">PL & Sub PL Combined</option>
+                                                        <option value="location">Location</option>
+                                                        <option value="customer">Customer</option>
+                                                        <option value="work_order">Work Order</option>
+                                                        <option value="pack_no">Pack No</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="toggle-btn-group" id="user-view-mode-toggle">
+                                                    <button class="toggle-btn active" data-view-mode="trend">
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" class="btn-svg-icon">
+                                                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                                                        </svg>
+                                                        Trends
+                                                    </button>
+                                                    <button class="toggle-btn" data-view-mode="bar">
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" class="btn-svg-icon">
+                                                            <line x1="12" y1="20" x2="12" y2="10" />
+                                                            <line x1="18" y1="20" x2="18" y2="4" />
+                                                            <line x1="6" y1="20" x2="6" y2="16" />
+                                                        </svg>
+                                                        Bar Chart
+                                                    </button>
+                                                    <button class="toggle-btn" data-view-mode="pie">
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" class="btn-svg-icon">
+                                                            <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                                                            <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                                                        </svg>
+                                                        Pie Chart
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="unified-chart-grid mt-3" id="user-chart-grid-container">
+                                            <div class="canvas-wrapper unified-canvas-wrapper" id="user-canvas-wrapper">
+                                                <canvas id="user-unified-chart"></canvas>
+                                                <div id="user-unified-chart-fallback" class="fallback-chart hidden">
+                                                    <div class="fallback-msg">No visualization data available for
+                                                        current selection</div>
+                                                </div>
+                                            </div>
+                                            <div class="breakdown-details-panel hidden"
+                                                id="user-breakdown-details-panel">
+                                                <h4 id="breakdown-table-heading">Category Totals</h4>
+                                                <div class="breakdown-items-list" id="user-breakdown-list">
+                                                    <!-- Dynamic breakdown items -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SUB-TAB CONTENT: LOCATION ANALYTICS -->
+                            <div id="location-tab-content" class="dash-subtab-content">
+                                <!-- Global Filter Bar -->
+                                <div class="glass-card filter-bar">
+                                    <div class="filter-group">
+                                        <label for="loc-global-date-filter">
+                                            <svg class="filter-icon" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                                <line x1="16" y1="2" x2="16" y2="6" />
+                                                <line x1="8" y1="2" x2="8" y2="6" />
+                                                <line x1="3" y1="10" x2="21" y2="10" />
+                                            </svg>
+                                            Global Time Range:
+                                        </label>
+                                        <select id="loc-global-date-filter" class="filter-select">
+                                            <option value="all">Total / All-time</option>
+                                            <option value="today">Today</option>
+                                            <option value="7days">Last 7 Days</option>
+                                            <option value="30days">Last 30 Days</option>
+                                            <option value="custom">Custom Date Range</option>
+                                        </select>
+                                    </div>
+
+                                    <div id="loc-custom-date-group" class="filter-group hidden">
+                                        <label for="loc-global-start-date">From:</label>
+                                        <input type="date" id="loc-global-start-date" class="filter-date-input">
+                                        <label for="loc-global-end-date">To:</label>
+                                        <input type="date" id="loc-global-end-date" class="filter-date-input">
+                                    </div>
+
+                                    <div class="filter-group">
+                                        <label for="loc-global-field-filter">
+                                            <svg class="filter-icon" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                                            </svg>
+                                            Global Data Field:
+                                        </label>
+                                        <select id="loc-global-field-filter" class="filter-select">
+                                            <option value="overall">Overall Scan Volume</option>
+                                            <option value="pl_type">PL Type</option>
+                                            <option value="sub_pl_type">Sub PL Type</option>
+                                            <option value="customer">Customer</option>
+                                            <option value="work_order">Work Order</option>
+                                            <option value="pack_no">Pack No</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Multi-Location Selector Swatches -->
+                                    <div class="filter-group loc-selector-group">
+                                        <label>Active Locations:</label>
+                                        <div class="loc-swatches-container" id="loc-swatches-container">
+                                            <!-- Dynamic swatches for 8 canonical locations -->
+                                        </div>
+                                    </div>
+
+                                    <div class="filter-actions">
+                                        <button id="loc-apply-filter-btn" class="primary-btn sm-btn">Apply
+                                            Global</button>
+                                        <button id="loc-reset-all-btn" class="secondary-btn sm-btn">Reset All</button>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Modular Grid Container for Location Panels -->
+                                <div class="loc-grid-container loc-grid-cols-4 mt-4" id="location-grid-container">
+                                    <!-- 8 Canonical Location Panels generated dynamically -->
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <!-- TAB 4: Report Generator -->
+                    <section id="report-tab" class="tab-content hidden">
+                        <div class="report-layout glass-card">
+                            <div class="report-header-section">
+                                <h2>Custom Reports & Exports</h2>
+                                <p class="subtitle">Configure parameters and date ranges to generate downloads and print
+                                    sheets.</p>
+                            </div>
+
+                            <!-- Query Filter inputs -->
+                            <div class="report-filter-grid mt-3">
+                                <div class="input-group">
+                                    <label for="rep-start-date">Start Date</label>
+                                    <input type="date" id="rep-start-date">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rep-end-date">End Date</label>
+                                    <input type="date" id="rep-end-date">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rep-location">Location</label>
+                                    <select id="rep-location">
+                                        <option value="">All Locations</option>
+                                        <option value="B1 GF">B1 GF</option>
+                                        <option value="B1 FF">B1 FF</option>
+                                        <option value="B2 GF">B2 GF</option>
+                                        <option value="B2 FF">B2 FF</option>
+                                        <option value="B2 HF">B2 HF</option>
+                                        <option value="B2 EF">B2 EF</option>
+                                        <option value="KW GF">KW GF</option>
+                                        <option value="OS">OS</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="rep-customer">Customer</label>
+                                    <select id="rep-customer">
+                                        <option value="">All Customers</option>
+                                        <option value="AEO">AEO</option>
+                                        <option value="Inditex">Inditex</option>
+                                        <option value="Stacy">Stacy</option>
+                                        <option value="League">League</option>
+                                        <option value="VSS">VSS</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="rep-pl-type">PL Type</label>
+                                    <select id="rep-pl-type">
+                                        <option value="">All Types</option>
+                                        <option value="New">New</option>
+                                        <option value="Add">Add</option>
+                                        <option value="Update">Update</option>
+                                        <option value="Revise">Revise</option>
+                                        <option value="R2">R2</option>
+                                        <option value="Delete">Delete</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="rep-operator">Operator Search</label>
+                                    <input type="text" id="rep-operator" placeholder="Search username...">
+                                </div>
+                            </div>
+
+                            <!-- Export Action Buttons -->
+                            <div class="report-actions-row border-top-divider mt-4">
+                                <div class="left-actions">
+                                    <button type="button" id="rep-filter-btn" class="primary-btn compact-btn">Generate
+                                        Report</button>
+                                    <button type="button" id="rep-reset-btn" class="secondary-btn compact-btn">Reset
+                                        Filters</button>
+                                </div>
+                                <div class="right-actions gap-2" id="export-controls" style="display: none;">
+                                    <button type="button" id="export-csv-btn" class="info-btn compact-btn">Export to
+                                        CSV</button>
+                                    <button type="button" id="export-xls-btn" class="info-btn compact-btn">Export to
+                                        Excel</button>
+                                    <button type="button" id="export-pdf-btn" class="primary-btn compact-btn">Print /
+                                        PDF
+                                        Report</button>
+                                </div>
+                            </div>
+
+                            <!-- Report matches summary table -->
+                            <div class="report-summary mt-4 hidden" id="report-results-wrapper">
+                                <h3>Report Entries Match (<span id="report-match-count">0</span> records found)</h3>
+                                <div class="table-wrapper mt-2">
+                                    <table id="report-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Master ID</th>
+                                                <th>Work Order</th>
+                                                <th>Pack No</th>
+                                                <th>Type</th>
+                                                <th>Sub PL Type</th>
+                                                <th>Location</th>
+                                                <th>Customer</th>
+                                                <th>Timestamp</th>
+                                                <th>Operator</th>
+                                                <th>PC IP</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="report-table-body">
+                                            <!-- Filled dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 5: Settings & User Preferences -->
+                    <section id="settings-tab" class="tab-content hidden">
+                        <div class="settings-container">
+                            <!-- Top Sub-Navigation Bar (Shows ONLY inside Settings tab) -->
+                            <nav class="settings-sub-topbar">
+                                <button class="settings-sub-btn active" data-sub-tab="settings-panel-theme">
+                                    <span class="sub-tab-icon">
+                                        <svg class="sub-tab-icon-svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                                        </svg>
+                                    </span> UI & Theme Settings
+                                </button>
+                                <button class="settings-sub-btn" data-sub-tab="settings-panel-pref">
+                                    <span class="sub-tab-icon">
+                                        <svg class="sub-tab-icon-svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="3" />
+                                            <path
+                                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                                        </svg>
+                                    </span> General Preferences
+                                </button>
+                                <button class="settings-sub-btn" data-sub-tab="settings-panel-security">
+                                    <span class="sub-tab-icon">
+                                        <svg class="sub-tab-icon-svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>
+                                    </span> Security & Sessions
+                                </button>
+                                <!-- Conditional Admin button -->
+                                <button class="settings-sub-btn" id="settings-nav-admin"
+                                    data-sub-tab="settings-panel-users" style="display: none;">
+                                    <span class="sub-tab-icon">
+                                        <svg class="sub-tab-icon-svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                            <circle cx="9" cy="7" r="4" />
+                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                        </svg>
+                                    </span> User Management
+                                </button>
+                                <button class="settings-sub-btn" data-sub-tab="settings-panel-diag">
+                                    <span class="sub-tab-icon">
+                                        <svg class="sub-tab-icon-svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="20" x2="18" y2="10" />
+                                            <line x1="12" y1="20" x2="12" y2="4" />
+                                            <line x1="6" y1="20" x2="6" y2="14" />
+                                        </svg>
+                                    </span> Diagnostics & Logs
+                                </button>
+                            </nav>
+
+                            <!-- Sub-Tab Content Panels -->
+                            <div class="settings-sub-content">
+
+                                <!-- Panel 0: UI & Theme Customization -->
+                                <div id="settings-panel-theme" class="settings-sub-panel active">
+                                    <div class="glass-card">
+                                        <h3>UI & Theme Customization</h3>
+                                        <p class="subtitle">Customize interface colors, typography, glassmorphism, and
+                                            visual polish.</p>
+
+                                        <div class="form-grid-2">
+                                            <div class="input-group">
+                                                <label for="theme-preset-select">Visual Interface Mode</label>
+                                                <select id="theme-preset-select">
+                                                    <option value="dark" selected>Superdesign Obsidian Dark (#050505)
+                                                    </option>
+                                                    <option value="light">Clean Bright Light</option>
+                                                    <option value="system">Follow System Preference</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <label>Primary Color Accent</label>
+                                                <div class="accent-swatches-row">
+                                                    <button type="button" class="accent-swatch-btn active"
+                                                        data-accent="#FF4500" style="background: #FF4500;"
+                                                        title="Superdesign Orange"></button>
+                                                    <button type="button" class="accent-swatch-btn"
+                                                        data-accent="#0A84FF" style="background: #0A84FF;"
+                                                        title="Sapphire Blue"></button>
+                                                    <button type="button" class="accent-swatch-btn"
+                                                        data-accent="#30D158" style="background: #30D158;"
+                                                        title="Emerald Green"></button>
+                                                    <button type="button" class="accent-swatch-btn"
+                                                        data-accent="#BF5AF2" style="background: #BF5AF2;"
+                                                        title="Cyber Purple"></button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-grid-2 mt-2">
+                                            <div class="input-group">
+                                                <label for="theme-font-select">Heading Typography</label>
+                                                <select id="theme-font-select">
+                                                    <option value="serif" selected>Playfair Display (Editorial Serif)
+                                                    </option>
+                                                    <option value="sans">Inter (Modern Clean Sans)</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <label for="pref-statusbar-mode">Status Bar Mode</label>
+                                                <select id="pref-statusbar-mode">
+                                                    <option value="accent" selected>Accent Match</option>
+                                                    <option value="contrast">Mode Tone</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Live Component Preview Card -->
+                                        <div class="theme-preview-card mt-3">
+                                            <span class="meta-label mb-2">Live UI Component Preview</span>
+                                            <div class="preview-components-flex">
+                                                <button type="button" class="primary-btn">Primary Action</button>
+                                                <button type="button" class="secondary-btn">Secondary</button>
+                                                <span class="badge local-badge">Active Badge</span>
+                                                <span class="badge admin-badge">System Badge</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Panel 1: Preferences -->
+                                <div id="settings-panel-pref" class="settings-sub-panel">
+                                    <div class="glass-card">
+                                        <h3>Personal Preferences</h3>
+                                        <p class="subtitle">Customize entry speeds, default form values, and audio
+                                            feedback.
+                                        </p>
+
+                                        <div class="form-grid-2">
+                                            <div class="input-group">
+                                                <label for="pref-default-location">Default Location</label>
+                                                <select id="pref-default-location">
+                                                    <option value="">None (Always Ask)</option>
+                                                    <option value="B1 GF">B1 GF</option>
+                                                    <option value="B1 FF">B1 FF</option>
+                                                    <option value="B2 GF">B2 GF</option>
+                                                    <option value="B2 FF">B2 FF</option>
+                                                    <option value="B2 HF">B2 HF</option>
+                                                    <option value="B2 EF">B2 EF</option>
+                                                    <option value="KW GF">KW GF</option>
+                                                    <option value="OS">OS</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <label for="pref-default-customer">Default Customer</label>
+                                                <select id="pref-default-customer">
+                                                    <option value="">None (Always Ask)</option>
+                                                    <option value="AEO">AEO</option>
+                                                    <option value="Inditex">Inditex</option>
+                                                    <option value="Stacy">Stacy</option>
+                                                    <option value="League">League</option>
+                                                    <option value="VSS">VSS</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-grid-2 mt-2">
+                                            <div class="input-group">
+                                                <label for="pref-default-pltype">Default PL Type</label>
+                                                <select id="pref-default-pltype">
+                                                    <option value="">None (Always Ask)</option>
+                                                    <option value="New">New</option>
+                                                    <option value="Add">Add</option>
+                                                    <option value="Update">Update</option>
+                                                    <option value="Revise">Revise</option>
+                                                    <option value="R2">R2</option>
+                                                    <option value="Delete">Delete</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <label for="pref-audio-tone">Unified Audio Tone</label>
+                                                <select id="pref-audio-tone">
+                                                    <option value="chime" selected>🔔 Crystal Chime</option>
+                                                    <option value="classic">🎵 Classic Beep</option>
+                                                    <option value="retro">🎷 Retro Pop</option>
+                                                    <option value="pulse">🎸 Smooth Pulse</option>
+                                                    <option value="mute">🔇 Mute All Tones</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="scan-mode-row mt-3">
+                                            <label class="switch-container">
+                                                <input type="checkbox" id="pref-enable-beeps" checked>
+                                                <span class="slider round"></span>
+                                                <span class="switch-label">Enable Audio Feedback Tone</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="scan-mode-row mt-2">
+                                            <label class="switch-container">
+                                                <input type="checkbox" id="pref-auto-clear" checked>
+                                                <span class="slider round"></span>
+                                                <span class="switch-label">Auto-Clear Form After Successful
+                                                    Submit</span>
+                                            </label>
+                                        </div>
+
+                                        <button type="button" id="save-preferences-btn"
+                                            class="primary-btn w-full mt-3">Save
+                                            Preferences</button>
+                                    </div>
+                                </div>
+
+                                <!-- Panel 2: Security -->
+                                <div id="settings-panel-security" class="settings-sub-panel">
+                                    <div class="glass-card">
+                                        <h3>Security & Credentials</h3>
+                                        <p class="subtitle">Securely update your password and manage active login
+                                            sessions.
+                                        </p>
+
+                                        <div class="form-grid-2">
+                                            <div class="input-group">
+                                                <label for="change-pass-current">Current Password</label>
+                                                <input type="password" id="change-pass-current">
+                                            </div>
+                                            <div class="input-group">
+                                                <label for="change-pass-new">New Password</label>
+                                                <input type="password" id="change-pass-new">
+                                            </div>
+                                        </div>
+
+                                        <div class="input-group mt-2">
+                                            <label for="pref-session-timeout">Inactivity Session Timeout</label>
+                                            <select id="pref-session-timeout">
+                                                <option value="900">15 Minutes</option>
+                                                <option value="1800" selected>30 Minutes</option>
+                                                <option value="3600">1 Hour</option>
+                                                <option value="0">Never (Keep Session Active)</option>
+                                            </select>
+                                        </div>
+
+                                        <button type="button" id="btn-submit-change-pass"
+                                            class="info-btn w-full mt-3">Update Password</button>
+                                        <p id="change-pass-status" class="status-msg text-center mt-2"></p>
+
+                                        <div class="border-top-divider mt-4 pt-3">
+                                            <h4>Active Office Sessions</h4>
+                                            <p class="subtitle text-sm">Below are the devices connected to the local
+                                                database network.</p>
+                                            <div class="table-wrapper mini-table mt-2">
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Device IP</th>
+                                                            <th>Operator</th>
+                                                            <th>Status</th>
+                                                            <th>Login Time</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="session-logs-tbody">
+                                                        <!-- Populated dynamically / Mocked -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <button type="button" id="btn-kill-sessions"
+                                                class="secondary-btn w-full mt-2 compact-btn">Deactivate Other Active
+                                                Devices</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Panel 3: User Management & Import (Admin Only) -->
+                                <div id="settings-panel-users" class="settings-sub-panel">
+                                    <div class="glass-card mb-4" id="admin-import-card-section"
+                                        style="display: block; border-left: 4px solid var(--accent);">
+                                        <div class="form-row justify-between align-center">
+                                            <h3>Excel Data Import</h3>
+                                            <span class="badge admin-badge">Admin Feature</span>
+                                        </div>
+                                        <p class="subtitle">Import raw Excel files (.xlsm or .xlsx) like
+                                            <code>Raw PL Data.xlsm</code> into user databases. Entries will be
+                                            chronologically sorted and assigned sequence IDs automatically.</p>
+
+                                        <div class="db-restore-upload-box mt-3"
+                                            style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; border: 1px dashed var(--sidebar-border);">
+                                            <label for="excel-import-file-main" class="file-upload-label">
+                                                <span>Select Excel File (.xlsm / .xlsx):</span>
+                                                <input type="file" id="excel-import-file-main" accept=".xlsm,.xlsx">
+                                            </label>
+                                            <div class="mt-2" style="display: flex; gap: 8px; align-items: center;">
+                                                <button type="button" id="btn-submit-excel-import-main"
+                                                    class="primary-btn compact-btn" style="display: none;">Upload &
+                                                    Import Data</button>
+                                            </div>
+                                            <p id="excel-import-status-main" class="status-msg text-sm mt-2"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-card" id="admin-settings-section" style="display: none;">
+                                        <h3>Office User Management</h3>
+                                        <p class="subtitle">Admin panel to add, modify, or delete operator accounts and
+                                            roles.</p>
+
+                                        <div class="user-creation-box border-bottom-divider pb-3 mb-3">
+                                            <h4>Create Operator Account</h4>
+                                            <div class="form-grid-2 mt-2">
+                                                <div class="input-group">
+                                                    <input type="text" id="admin-new-username" placeholder="Username">
+                                                </div>
+                                                <div class="input-group">
+                                                    <input type="password" id="admin-new-password"
+                                                        placeholder="Password (min 6 chars)">
+                                                </div>
+                                            </div>
+                                            <div class="form-row justify-between align-center mt-2">
+                                                <select id="admin-new-role" class="settings-role-select">
+                                                    <option value="Local">Local Operator</option>
+                                                    <option value="Admin">Administrator</option>
+                                                </select>
+                                                <button type="button" id="btn-admin-create-user"
+                                                    class="primary-btn compact-btn">Register Account</button>
+                                            </div>
+                                            <p id="admin-create-user-status" class="status-msg text-center mt-2"></p>
+                                        </div>
+
+                                        <div class="form-row justify-between align-center mt-3">
+                                            <h4>Registered Operators</h4>
+                                            <input type="text" id="admin-user-search" placeholder="Filter operators..."
+                                                class="settings-user-search">
+                                        </div>
+                                        <div class="table-wrapper mini-table mt-2">
+                                            <table id="admin-users-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>User ID</th>
+                                                        <th>Username</th>
+                                                        <th>Role</th>
+                                                        <th>Reset Password</th>
+                                                        <th>Status</th>
+                                                        <th class="text-center">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="admin-users-table-body">
+                                                    <!-- Populated dynamically -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Panel 4: Diagnostics & Backups -->
+                                <div id="settings-panel-diag" class="settings-sub-panel">
+                                    <div class="glass-card">
+                                        <h3>Diagnostics & Backups</h3>
+                                        <p class="subtitle">System health monitors, database backups, and REST endpoints
+                                            configuration.</p>
+
+                                        <div class="form-grid-2">
+                                            <div class="input-group">
+                                                <label for="settings-ip-pref">Server Host IP</label>
+                                                <input type="text" id="settings-ip-pref">
+                                            </div>
+                                            <div class="input-group">
+                                                <label for="settings-port-pref">Server Port</label>
+                                                <input type="number" id="settings-port-pref">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-actions-row mt-3 gap-2">
+                                            <button type="button" id="save-server-pref-btn"
+                                                class="primary-btn compact-btn">Reconnect</button>
+                                            <button type="button" id="btn-test-db-connection"
+                                                class="secondary-btn compact-btn">Test Connection</button>
+                                        </div>
+                                        <p id="server-pref-status" class="status-msg text-center mt-2"></p>
+
+                                        <div class="border-top-divider mt-4 pt-3" id="admin-backup-utility-section"
+                                            style="display: none;">
+                                            <div class="form-row justify-between align-center">
+                                                <h4>Database Management</h4>
+                                                <span class="badge info-badge" id="db-file-size">Size: -- KB</span>
+                                            </div>
+                                            <p class="subtitle text-sm">Download backups or restore from an existing
+                                                database file (.db).</p>
+
+                                            <div class="form-actions-row mt-2 gap-2 no-border-padding">
+                                                <button type="button" id="btn-download-db-backup"
+                                                    class="info-btn w-full">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="btn-icon-svg"
+                                                        style="width:16px;height:16px;margin-right:6px;stroke-width:2.5;">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="7 10 12 15 17 10" />
+                                                        <line x1="12" y1="15" x2="12" y2="3" />
+                                                    </svg>Download DB Backup
+                                                </button>
+                                            </div>
+
+                                            <div class="db-restore-upload-box mt-3">
+                                                <label for="db-restore-file" class="file-upload-label">
+                                                    <span>Restore DB from file:</span>
+                                                    <input type="file" id="db-restore-file" accept=".db">
+                                                </label>
+                                                <p id="db-restore-status" class="status-msg text-sm mt-1"></p>
+                                            </div>
+
+                                            <div class="border-top-divider mt-4 pt-3" id="admin-excel-import-section">
+                                                <div class="form-row justify-between align-center">
+                                                    <h4>Excel Data Import</h4>
+                                                    <span class="badge admin-badge">Admin Only</span>
+                                                </div>
+                                                <p class="subtitle text-sm">Upload raw Excel Packing List data (.xlsm or
+                                                    .xlsx) such as <code>Raw PL Data.xlsm</code> to import records
+                                                    sorted chronologically into user databases with generated linked
+                                                    IDs.</p>
+
+                                                <div class="db-restore-upload-box mt-3">
+                                                    <label for="excel-import-file" class="file-upload-label">
+                                                        <span>Select Excel File (.xlsm / .xlsx):</span>
+                                                        <input type="file" id="excel-import-file" accept=".xlsm,.xlsx">
+                                                    </label>
+                                                    <div class="mt-2"
+                                                        style="display: flex; gap: 8px; align-items: center;">
+                                                        <button type="button" id="btn-submit-excel-import"
+                                                            class="primary-btn compact-btn"
+                                                            style="display: none;">Upload & Import Data</button>
+                                                    </div>
+                                                    <p id="excel-import-status" class="status-msg text-sm mt-2"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="border-top-divider mt-4 pt-3">
+                                            <h4>Office Server Activity Logs</h4>
+                                            <p class="subtitle text-sm">Real-time server log console.</p>
+                                            <div class="console-box mt-2" id="console-logs-viewer">
+                                                <div class="console-line">[INFO] Poller service initiated
+                                                    successfully...
+                                                </div>
+                                                <div class="console-line">[OK] Server communication verified on port
+                                                    5000.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div> <!-- End of app-main-content -->
+        </div> <!-- End of main-app -->
+
+        <!-- BULK MODIFY POPUP WINDOW (As a modal) -->
+        <div id="bulk-modify-modal" class="modal-overlay hidden">
+            <div class="glass-card main-form-card modal-card-large scale-up">
+                <div class="modal-header">
+                    <h2>Bulk Modification Editor</h2>
+                    <span class="record-counter" id="bulk-index-display">Record 1 of 5</span>
+                </div>
+
+                <form id="bulk-form" onsubmit="return false;">
+                    <div class="form-grid-3">
+                        <div class="input-group">
+                            <label for="bulk-workorder">Work-Order</label>
+                            <input type="text" id="bulk-workorder" maxlength="9">
+                            <span class="error-text" id="bulk-workorder-error"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="bulk-packno">Pack No.</label>
+                            <input type="text" id="bulk-packno" maxlength="5">
+                            <span class="error-text" id="bulk-packno-error"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="bulk-pltype">PL Type</label>
+                            <select id="bulk-pltype">
+                                <option value="New">New</option>
+                                <option value="Add">Add</option>
+                                <option value="Update">Update</option>
+                                <option value="Revise">Revise</option>
+                                <option value="R2">R2</option>
+                                <option value="Delete">Delete</option>
+                            </select>
+                            <span class="error-text" id="bulk-pltype-error"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-3">
+                        <div class="input-group relative-container">
+                            <div id="bulk-revise-notification" class="bubble-notification hidden">
+                                because of wrong
+                            </div>
+                            <label for="bulk-subpltype">Sub PL Type</label>
+                            <select id="bulk-subpltype">
+                                <!-- Populated dynamically -->
+                            </select>
+                            <span class="error-text" id="bulk-subpltype-error"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="bulk-location">Location</label>
+                            <select id="bulk-location">
+                                <option value="B1 GF">B1 GF</option>
+                                <option value="B1 FF">B1 FF</option>
+                                <option value="B2 GF">B2 GF</option>
+                                <option value="B2 FF">B2 FF</option>
+                                <option value="B2 HF">B2 HF</option>
+                                <option value="B2 EF">B2 EF</option>
+                                <option value="KW GF">KW GF</option>
+                                <option value="OS">OS</option>
+                            </select>
+                            <span class="error-text" id="bulk-location-error"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="bulk-customer">Customer</label>
+                            <select id="bulk-customer">
+                                <option value="AEO">AEO</option>
+                                <option value="Inditex">Inditex</option>
+                                <option value="Stacy">Stacy</option>
+                                <option value="League">League</option>
+                                <option value="VSS">VSS</option>
+                            </select>
+                            <span class="error-text" id="bulk-customer-error"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="input-group">
+                            <label for="bulk-date">Date (YYYY-MM-DD)</label>
+                            <input type="text" id="bulk-date">
+                            <span class="error-text" id="bulk-date-error"></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="bulk-time">Time (HH:MM)</label>
+                            <div class="time-input-container">
+                                <input type="text" id="bulk-time">
+                                <span id="bulk-time-helper" class="time-helper-label">Time: -- : --</span>
+                            </div>
+                            <span class="error-text" id="bulk-time-error"></span>
+                        </div>
+                    </div>
+
+                    <!-- Navigation between rows -->
+                    <div class="bulk-nav-bar">
+                        <button type="button" id="bulk-prev-btn" class="nav-arrow-btn">◀ Previous Selected</button>
+                        <button type="button" id="bulk-next-btn" class="nav-arrow-btn">Next Selected ▶</button>
+                    </div>
+
+                    <div class="form-actions-row border-top-divider mt-4">
+                        <div class="action-buttons-group">
+                            <button type="button" id="bulk-save-this-btn" class="info-btn">Save Current Entry
+                                changes</button>
+                            <button type="button" id="bulk-save-all-btn" class="primary-btn">Save All Selected Changes
+                                (1
+                                Click)</button>
+                            <button type="button" id="bulk-close-btn" class="secondary-btn">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- CONFIRMATION POPUP DIALOG -->
+        <div id="confirm-modal" class="modal-overlay hidden">
+            <div class="glass-card compact-card modal-card scale-up text-center">
+                <span class="warning-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                </span>
+                <h2>Confirm Action</h2>
+                <p id="confirm-msg" class="my-3">Are you sure you want to perform this operation?</p>
+
+                <div class="form-row justify-center mb-4">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="confirm-dont-show">
+                        <span class="checkmark"></span>
+                        Don't show this message again
+                    </label>
+                </div>
+
+                <div class="form-actions justify-center">
+                    <button id="confirm-yes-btn" class="danger-btn px-4">Yes, Delete</button>
+                    <button id="confirm-no-btn" class="secondary-btn px-4">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN PASSWORD PROMPT DIALOG -->
+        <div id="admin-confirm-modal" class="modal-overlay hidden">
+            <div class="glass-card compact-card modal-card scale-up text-center">
+                <span class="warning-icon admin-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                </span>
+                <h2>Admin Authorization</h2>
+                <p class="my-3">Please enter your current Administrator password to confirm this action:</p>
+                <div class="input-group mb-4">
+                    <input type="password" id="admin-confirm-password-input" placeholder="Admin Password"
+                        class="w-full">
+                </div>
+                <div class="form-actions justify-center">
+                    <button id="admin-confirm-yes-btn" class="primary-btn px-4">Confirm</button>
+                    <button id="admin-confirm-no-btn" class="secondary-btn px-4">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXCEL IMPORT SUMMARY MODAL -->
+        <div id="excel-import-summary-modal" class="modal-overlay hidden">
+            <div class="glass-card modal-card scale-up text-center" style="max-width: 520px; width: 90%;">
+                <div class="modal-header justify-center mb-2">
+                    <h2>Excel Import Successful</h2>
+                </div>
+                <div class="modal-body text-left mt-2">
+                    <p id="excel-import-summary-msg" class="subtitle text-md mb-3"
+                        style="color: var(--accent-color); font-weight: 600;"></p>
+                    <div class="details-box p-3 border-rounded glass-panel"
+                        style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; font-size: 0.95rem; line-height: 1.6;">
+                        <p style="margin: 4px 0;"><strong>Total Entries Imported:</strong> <span
+                                id="summary-imported-count"
+                                style="color: var(--success-color); font-weight: 700;">0</span></p>
+                        <p style="margin: 4px 0;"><strong>Users Processed:</strong> <span
+                                id="summary-user-count">0</span></p>
+                        <p style="margin: 4px 0;"><strong>New Accounts Auto-Created:</strong> <span
+                                id="summary-created-users">None</span></p>
+                        <p style="margin: 4px 0;"><strong>Date & Time Range:</strong> <span
+                                id="summary-date-range">N/A</span></p>
+                    </div>
+                </div>
+                <div class="modal-actions mt-4 justify-center">
+                    <button type="button" id="btn-close-import-summary" class="primary-btn px-4">Done</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- USER DELETE OPTIONS MODAL -->
+        <div id="user-delete-options-modal" class="modal-overlay hidden">
+            <div class="glass-card modal-card scale-up text-center" style="max-width: 480px; width: 90%;">
+                <div class="modal-header justify-center mb-2">
+                    <h2 id="delete-user-modal-title">Delete User Account</h2>
+                </div>
+                <div class="modal-body text-left mt-2">
+                    <p id="delete-user-modal-msg" class="subtitle text-md mb-3">Are you sure you want to delete this
+                        user account?</p>
+
+                    <div class="details-box p-3 border-rounded glass-panel mb-3"
+                        style="background: rgba(255,255,255,0.03); padding: 14px; border-radius: 8px;">
+                        <label style="font-weight: 700; display: block; margin-bottom: 8px;">Packing List Data
+                            Handling:</label>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <label class="radio-container"
+                                style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                                <input type="radio" name="delete-data-option" value="delete" checked>
+                                <span><strong>Delete User AND Delete all packing list entries</strong><br><small
+                                        style="color: var(--label-secondary);">Permanently wipes all entries created by
+                                        this user.</small></span>
+                            </label>
+                            <label class="radio-container"
+                                style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                                <input type="radio" name="delete-data-option" value="keep">
+                                <span><strong>Delete User ONLY (Keep packing list entries)</strong><br><small
+                                        style="color: var(--label-secondary);">Retains historical packing list records
+                                        in database.</small></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions mt-3 justify-center" style="display: flex; gap: 12px;">
+                    <button type="button" id="btn-confirm-delete-user" class="danger-btn px-4">Confirm Delete</button>
+                    <button type="button" id="btn-cancel-delete-user" class="secondary-btn px-4">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Antigravity IDE Bottom Status Bar -->
+        <footer class="ide-status-bar" id="ide-status-bar">
+            <div class="status-bar-left">
+                <span class="status-item online-item" id="sb-server-status"><span class="status-dot green"></span>
+                    127.0.0.1:5000</span>
+                <span class="status-divider">|</span>
+                <span class="status-item" id="sb-user-info">User: Guest</span>
+                <span class="status-divider">|</span>
+                <span class="status-item" id="sb-mode-info">Entry Form</span>
+            </div>
+            <div class="status-bar-right">
+                <span class="status-item">UTF-8</span>
+                <span class="status-divider">|</span>
+                <span class="status-item">SQLite Database</span>
+                <span class="status-divider">|</span>
+                <span class="status-item">PL Tracker v2.0</span>
+            </div>
+        </footer>
+
+        <!-- Main javascript file -->
+        <script src="app.js"></script>
+
+</body>
+
+</html>

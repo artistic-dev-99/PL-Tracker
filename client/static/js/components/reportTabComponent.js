@@ -1,0 +1,102 @@
+// Report Generator Component
+export function renderReportTabComponent() {
+    return `
+    <section id="report-tab" class="tab-content hidden">
+        <div class="report-layout glass-card">
+            <div class="report-header-section">
+                <h2>Custom Reports & Exports</h2>
+                <p class="subtitle">Configure parameters and date ranges to generate downloads and print sheets.</p>
+            </div>
+
+            <div class="report-filter-grid mt-3">
+                <div class="input-group">
+                    <label for="rep-start-date">Start Date</label>
+                    <input type="date" id="rep-start-date">
+                </div>
+                <div class="input-group">
+                    <label for="rep-end-date">End Date</label>
+                    <input type="date" id="rep-end-date">
+                </div>
+                <div class="input-group">
+                    <label for="rep-location">Location</label>
+                    <select id="rep-location">
+                        <option value="">All Locations</option>
+                        <option value="B1 GF">B1 GF</option>
+                        <option value="B1 FF">B1 FF</option>
+                        <option value="B2 GF">B2 GF</option>
+                        <option value="B2 FF">B2 FF</option>
+                        <option value="B2 HF">B2 HF</option>
+                        <option value="B2 EF">B2 EF</option>
+                        <option value="KW GF">KW GF</option>
+                        <option value="OS">OS</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="rep-customer">Customer</label>
+                    <select id="rep-customer">
+                        <option value="">All Customers</option>
+                        <option value="AEO">AEO</option>
+                        <option value="Inditex">Inditex</option>
+                        <option value="Stacy">Stacy</option>
+                        <option value="League">League</option>
+                        <option value="VSS">VSS</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="rep-pl-type">PL Type</label>
+                    <select id="rep-pl-type">
+                        <option value="">All Types</option>
+                        <option value="New">New</option>
+                        <option value="Add">Add</option>
+                        <option value="Update">Update</option>
+                        <option value="Revise">Revise</option>
+                        <option value="R2">R2</option>
+                        <option value="Delete">Delete</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="rep-operator">Operator Search</label>
+                    <input type="text" id="rep-operator" placeholder="Search username...">
+                </div>
+            </div>
+
+            <div class="report-actions-row border-top-divider mt-4">
+                <div class="left-actions">
+                    <button type="button" id="rep-filter-btn" class="primary-btn compact-btn">Generate Report</button>
+                    <button type="button" id="rep-reset-btn" class="secondary-btn compact-btn">Reset Filters</button>
+                </div>
+                <div class="right-actions gap-2" id="export-controls" style="display: none;">
+                    <button type="button" id="export-csv-btn" class="info-btn compact-btn">Export to CSV</button>
+                    <button type="button" id="export-xls-btn" class="info-btn compact-btn">Export to Excel</button>
+                    <button type="button" id="export-pdf-btn" class="primary-btn compact-btn">Print / PDF Report</button>
+                </div>
+            </div>
+
+            <div class="report-summary mt-4 hidden" id="report-results-wrapper">
+                <h3>Report Entries Match (<span id="report-match-count">0</span> records found)</h3>
+                <div class="table-wrapper mt-2">
+                    <table id="report-table">
+                        <thead>
+                            <tr>
+                                <th>Master ID</th>
+                                <th>Work Order</th>
+                                <th>Pack No</th>
+                                <th>Type</th>
+                                <th>Sub PL Type</th>
+                                <th>Location</th>
+                                <th>Customer</th>
+                                <th>Timestamp</th>
+                                <th>Operator</th>
+                                <th>PC IP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-table-body">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    `;
+}

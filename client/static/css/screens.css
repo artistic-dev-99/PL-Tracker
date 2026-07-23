@@ -1,0 +1,119 @@
+/* Screen Layout Grids, Forms, Dashboard, Analytics, Report Generator, Settings */
+
+.screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+}
+
+.screen.hidden {
+    display: none !important;
+}
+
+.entry-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: var(--space-5);
+    align-items: start;
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-4);
+}
+
+.dashboard-subtab-bar, .settings-sub-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--separator);
+    border-radius: var(--radius-lg);
+}
+
+.dash-subtab-content {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+}
+
+.dash-subtab-content.active {
+    display: flex !important;
+}
+
+.settings-sub-panel {
+    display: none;
+    width: 100%;
+}
+
+.settings-sub-panel.active {
+    display: block !important;
+}
+
+.loc-grid-container {
+    display: grid;
+    gap: var(--space-4);
+    width: 100%;
+}
+
+.loc-grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+.loc-grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.loc-grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.loc-grid-cols-1 { grid-template-columns: 1fr; }
+
+.loc-panel-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--separator);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.accent-swatches-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 4px;
+}
+
+.accent-swatch-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.accent-swatch-btn.active {
+    border-color: #FFFFFF;
+    box-shadow: 0 0 14px var(--accent);
+}

@@ -1,0 +1,219 @@
+<!-- TAB 3: Dashboard (Analytical Tool) -->
+<section id="dashboard-tab" class="tab-content hidden">
+    <div class="dashboard-container">
+        <!-- Sub-Tab Navigation Header -->
+        <div class="dashboard-subtab-bar">
+            <div class="subtab-buttons-group">
+                <button class="dash-subtab-btn active" data-dash-subtab="user-tab">
+                    <svg class="subtab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <span>User Analytics</span>
+                </button>
+                <button class="dash-subtab-btn" data-dash-subtab="location-tab">
+                    <svg class="subtab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span>Location Analytics</span>
+                </button>
+            </div>
+            <button id="dash-manual-refresh-btn" class="secondary-btn compact-btn dash-refresh-btn"
+                title="Refresh Analytics Data">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    width="14" height="14" class="btn-svg-icon">
+                    <path d="M23 4v6h-6" />
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                </svg>
+                <span>Refresh Data</span>
+            </button>
+        </div>
+
+        <!-- SUB-TAB CONTENT: USER -->
+        <div id="user-tab-content" class="dash-subtab-content active">
+            <!-- Filters & Interactivity Bar -->
+            <div class="glass-card filter-bar">
+                <div class="filter-group">
+                    <label for="dash-user-filter">
+                        <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        User:
+                    </label>
+                    <select id="dash-user-filter" class="filter-select">
+                        <option value="all">All Users</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="dash-date-filter">
+                        <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        Date & Time:
+                    </label>
+                    <select id="dash-date-filter" class="filter-select">
+                        <option value="all">Total / All-time</option>
+                        <option value="today">Today</option>
+                        <option value="7days">Last 7 Days</option>
+                        <option value="30days">Last 30 Days</option>
+                        <option value="custom">Custom Date Range</option>
+                    </select>
+                </div>
+
+                <div id="dash-custom-date-group" class="filter-group hidden">
+                    <label for="dash-start-date">From:</label>
+                    <input type="date" id="dash-start-date" class="filter-date-input">
+                    <label for="dash-end-date">To:</label>
+                    <input type="date" id="dash-end-date" class="filter-date-input">
+                </div>
+
+                <div class="filter-actions">
+                    <button id="dash-apply-filter-btn" class="primary-btn sm-btn">Apply Filter</button>
+                    <button id="dash-reset-filter-btn" class="secondary-btn sm-btn">Reset</button>
+                </div>
+            </div>
+
+            <!-- Visualizations Layout (Unified Single Box Design) -->
+            <div class="analytics-charts-grid mt-4">
+                <div class="glass-card chart-container full-width-chart">
+                    <div class="chart-header">
+                        <div class="chart-title-group">
+                            <h3 id="user-chart-title">Data Trends Over Time</h3>
+                            <p class="chart-subtitle" id="user-chart-subtitle">Timeline view of packing list creation trends over selected period</p>
+                        </div>
+                        <div class="chart-controls">
+                            <div id="user-category-select-wrapper" class="category-select-wrapper">
+                                <label for="user-breakdown-category" class="select-label">Data Field:</label>
+                                <select id="user-breakdown-category" class="filter-select select-sm">
+                                    <option value="overall">Overall Volume</option>
+                                    <option value="pl_type">PL Type</option>
+                                    <option value="sub_pl_type">Sub PL Type</option>
+                                    <option value="combined_pl">PL & Sub PL Combined</option>
+                                    <option value="location">Location</option>
+                                    <option value="customer">Customer</option>
+                                    <option value="work_order">Work Order</option>
+                                    <option value="pack_no">Pack No</option>
+                                </select>
+                            </div>
+
+                            <div class="toggle-btn-group" id="user-view-mode-toggle">
+                                <button class="toggle-btn active" data-view-mode="trend">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-icon">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                                    </svg>
+                                    Trends
+                                </button>
+                                <button class="toggle-btn" data-view-mode="bar">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-icon">
+                                        <line x1="12" y1="20" x2="12" y2="10" />
+                                        <line x1="18" y1="20" x2="18" y2="4" />
+                                        <line x1="6" y1="20" x2="6" y2="16" />
+                                    </svg>
+                                    Bar Chart
+                                </button>
+                                <button class="toggle-btn" data-view-mode="pie">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-icon">
+                                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                                        <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                                    </svg>
+                                    Pie Chart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="unified-chart-grid mt-3" id="user-chart-grid-container">
+                        <div class="canvas-wrapper unified-canvas-wrapper" id="user-canvas-wrapper">
+                            <canvas id="user-unified-chart"></canvas>
+                            <div id="user-unified-chart-fallback" class="fallback-chart hidden">
+                                <div class="fallback-msg">No visualization data available for current selection</div>
+                            </div>
+                        </div>
+                        <div class="breakdown-details-panel hidden" id="user-breakdown-details-panel">
+                            <h4 id="breakdown-table-heading">Category Totals</h4>
+                            <div class="breakdown-items-list" id="user-breakdown-list">
+                                <!-- Dynamic breakdown items -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUB-TAB CONTENT: LOCATION ANALYTICS -->
+        <div id="location-tab-content" class="dash-subtab-content">
+            <!-- Global Filter Bar -->
+            <div class="glass-card filter-bar">
+                <div class="filter-group">
+                    <label for="loc-global-date-filter">
+                        <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        Global Time Range:
+                    </label>
+                    <select id="loc-global-date-filter" class="filter-select">
+                        <option value="all">Total / All-time</option>
+                        <option value="today">Today</option>
+                        <option value="7days">Last 7 Days</option>
+                        <option value="30days">Last 30 Days</option>
+                        <option value="custom">Custom Date Range</option>
+                    </select>
+                </div>
+
+                <div id="loc-custom-date-group" class="filter-group hidden">
+                    <label for="loc-global-start-date">From:</label>
+                    <input type="date" id="loc-global-start-date" class="filter-date-input">
+                    <label for="loc-global-end-date">To:</label>
+                    <input type="date" id="loc-global-end-date" class="filter-date-input">
+                </div>
+
+                <div class="filter-group">
+                    <label for="loc-global-field-filter">
+                        <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                        </svg>
+                        Global Data Field:
+                    </label>
+                    <select id="loc-global-field-filter" class="filter-select">
+                        <option value="overall">Overall Scan Volume</option>
+                        <option value="pl_type">PL Type</option>
+                        <option value="sub_pl_type">Sub PL Type</option>
+                        <option value="customer">Customer</option>
+                        <option value="work_order">Work Order</option>
+                        <option value="pack_no">Pack No</option>
+                    </select>
+                </div>
+
+                <!-- Multi-Location Selector Swatches -->
+                <div class="filter-group loc-selector-group">
+                    <label>Active Locations:</label>
+                    <div class="loc-swatches-container" id="loc-swatches-container">
+                        <!-- Dynamic swatches for 8 canonical locations -->
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                    <button id="loc-apply-filter-btn" class="primary-btn sm-btn">Apply Global</button>
+                    <button id="loc-reset-all-btn" class="secondary-btn sm-btn">Reset All</button>
+                </div>
+            </div>
+
+            <!-- Dynamic Modular Grid Container for Location Panels -->
+            <div class="loc-grid-container loc-grid-cols-4 mt-4" id="location-grid-container">
+                <!-- 8 Canonical Location Panels generated dynamically -->
+            </div>
+        </div>
+
+    </div>
+</section>

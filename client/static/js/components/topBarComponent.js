@@ -1,0 +1,104 @@
+// IDE Top Bar Component
+export function renderTopBarComponent() {
+    return `
+    <div id="ide-top-bar" class="ide-top-bar">
+        <div class="ide-top-left">
+            <div class="ide-app-logo">
+                <svg class="ide-logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.778zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+                </svg>
+                <span class="ide-brand-name">PL Tracker</span>
+            </div>
+            <nav class="ide-menu-nav">
+                <div class="ide-menu-item">
+                    <button type="button" class="ide-menu-btn" data-menu="file">File</button>
+                    <div class="ide-dropdown-menu hidden" id="menu-dropdown-file">
+                        <div class="ide-menu-action" id="menu-action-clear"><span class="action-text">Clear
+                                Form</span><kbd>Ctrl+L</kbd></div>
+                        <div class="ide-menu-divider"></div>
+                        <div class="ide-menu-action" id="menu-action-import-excel" style="display:none;"><span
+                                class="action-text">Import Excel Data (.xlsm)</span></div>
+                        <div class="ide-menu-action" id="menu-action-export-csv"><span class="action-text">Export CSV
+                                Report</span><kbd>Ctrl+E</kbd></div>
+                        <div class="ide-menu-divider"></div>
+                        <div class="ide-menu-action" id="menu-action-logout"><span class="action-text">Sign
+                                Out</span><kbd>Alt+Q</kbd></div>
+                    </div>
+                </div>
+
+                <div class="ide-menu-item">
+                    <button type="button" class="ide-menu-btn" data-menu="edit">Edit</button>
+                    <div class="ide-dropdown-menu hidden" id="menu-dropdown-edit">
+                        <div class="ide-menu-action" id="menu-action-toggle-search"><span class="action-text">Search
+                                Mode</span><kbd>F11</kbd></div>
+                        <div class="ide-menu-action" id="menu-action-bulk-edit"><span class="action-text">Bulk Edit
+                                Selected</span><kbd>Ctrl+Shift+B</kbd></div>
+                    </div>
+                </div>
+
+                <div class="ide-menu-item">
+                    <button type="button" class="ide-menu-btn" data-menu="selection">Selection</button>
+                    <div class="ide-dropdown-menu hidden" id="menu-dropdown-selection">
+                        <div class="ide-menu-action" id="menu-action-select-all"><span class="action-text">Select All
+                                Rows</span><kbd>Ctrl+A</kbd></div>
+                    </div>
+                </div>
+
+                <div class="ide-menu-item">
+                    <button type="button" class="ide-menu-btn" data-menu="view">View</button>
+                    <div class="ide-dropdown-menu hidden" id="menu-dropdown-view">
+                        <div class="ide-menu-action" id="menu-action-toggle-sidebar"><span class="action-text">Toggle
+                                Sidebar</span><kbd>Ctrl+B</kbd></div>
+                        <div class="ide-menu-action" id="menu-action-toggle-theme"><span class="action-text">Toggle Dark /
+                                Light Theme</span><kbd>Ctrl+K</kbd></div>
+                    </div>
+                </div>
+
+                <div class="ide-menu-item">
+                    <button type="button" class="ide-menu-btn" data-menu="go">Go</button>
+                    <div class="ide-dropdown-menu hidden" id="menu-dropdown-go">
+                        <div class="ide-menu-action" id="menu-go-entry"><span class="action-text">Entry
+                                Form</span><kbd>Ctrl+1</kbd></div>
+                        <div class="ide-menu-action" id="menu-go-entries"><span class="action-text">Previous
+                                Entries</span><kbd>Ctrl+2</kbd></div>
+                        <div class="ide-menu-action" id="menu-go-dashboard"><span
+                                class="action-text">Dashboard</span><kbd>Ctrl+3</kbd></div>
+                        <div class="ide-menu-action" id="menu-go-reports"><span
+                                class="action-text">Reports</span><kbd>Ctrl+4</kbd></div>
+                        <div class="ide-menu-action" id="menu-go-settings"><span
+                                class="action-text">Settings</span><kbd>Ctrl+5</kbd></div>
+                    </div>
+                </div>
+
+                <div class="ide-menu-item">
+                    <button type="button" class="ide-menu-btn" data-menu="run">Run</button>
+                    <div class="ide-dropdown-menu hidden" id="menu-dropdown-run">
+                        <div class="ide-menu-action" id="menu-action-submit"><span class="action-text">Submit Active
+                                Entry</span><kbd>Ctrl+Enter</kbd></div>
+                    </div>
+                </div>
+
+                <div class="ide-menu-item">
+                    <button type="button" class="ide-menu-btn" data-menu="help">Help</button>
+                    <div class="ide-dropdown-menu hidden" id="menu-dropdown-help">
+                        <div class="ide-menu-action" id="menu-action-about"><span class="action-text">About PL
+                                Tracker</span></div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="ide-top-right">
+            <button type="button" id="theme-toggle-btn" class="icon-only-btn ide-theme-icon-btn"
+                title="Toggle Theme (Dark / Light)">
+                <svg id="theme-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    `;
+}

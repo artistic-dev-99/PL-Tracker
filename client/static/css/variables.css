@@ -1,0 +1,196 @@
+/* ============================================================
+   Superdesign-Inspired Dark Theme — PL Tracker Tokens
+   ============================================================ */
+
+:root {
+    /* Core Backgrounds */
+    --bg-primary: #050505;
+    --bg-secondary: #111111;
+    --bg-tertiary: #1a1a1a;
+    --bg-grouped: #050505;
+    --bg-grouped-secondary: #111111;
+    --bg-elevated: #161616;
+
+    /* Separators */
+    --separator: rgba(255, 255, 255, 0.08);
+    --separator-opaque: #222222;
+
+    /* Label Colors */
+    --label-primary: #f0f0f0;
+    --label-secondary: rgba(255, 255, 255, 0.55);
+    --label-tertiary: rgba(255, 255, 255, 0.28);
+    --label-quaternary: rgba(255, 255, 255, 0.14);
+
+    /* Fill Colors */
+    --fill-primary: rgba(255, 255, 255, 0.12);
+    --fill-secondary: rgba(255, 255, 255, 0.08);
+    --fill-tertiary: rgba(255, 255, 255, 0.06);
+    --fill-quaternary: rgba(255, 255, 255, 0.03);
+
+    /* Accent — Superdesign Orange-Red */
+    --accent: #FF4500;
+    --accent-hover: #FF5722;
+    --accent-subtle: rgba(255, 69, 0, 0.12);
+    --accent-glow-25: rgba(255, 69, 0, 0.25);
+    --accent-glow-35: rgba(255, 69, 0, 0.35);
+    --accent-glow-20: rgba(255, 69, 0, 0.20);
+    --accent-glow-30: rgba(255, 69, 0, 0.30);
+    --accent-glow-15: rgba(255, 69, 0, 0.15);
+    --accent-glow-08: rgba(255, 69, 0, 0.08);
+    --accent-glow-06: rgba(255, 69, 0, 0.06);
+    --accent-glow-03: rgba(255, 69, 0, 0.03);
+
+    /* System Colors */
+    --system-blue: #4A9EFF;
+    --system-green: #30D158;
+    --system-red: #FF453A;
+    --system-orange: #FF9F0A;
+    --system-yellow: #FFD60A;
+    --system-purple: #BF5AF2;
+    --system-pink: #FF375F;
+    --system-teal: #64D2FF;
+    --system-indigo: #5E5CE6;
+    --system-gray: #8E8E93;
+    --system-gray2: #636366;
+    --system-gray3: #48484A;
+    --system-gray4: #3A3A3C;
+    --system-gray5: #2C2C2E;
+    --system-gray6: #1C1C1E;
+
+    /* Tinted Backgrounds */
+    --tint-accent: rgba(255, 69, 0, 0.12);
+    --tint-blue: rgba(74, 158, 255, 0.12);
+    --tint-green: rgba(48, 209, 88, 0.12);
+    --tint-red: rgba(255, 69, 58, 0.12);
+    --tint-orange: rgba(255, 159, 10, 0.12);
+    --tint-purple: rgba(191, 90, 242, 0.12);
+
+    /* Semantic */
+    --success: var(--system-green);
+    --warning: var(--system-orange);
+    --danger: var(--system-red);
+    --info: var(--system-purple);
+
+    /* Shadows — warm-tinted */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.7);
+    --shadow-card: 0 0 0 1px var(--separator), 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 30px var(--accent-glow-08);
+
+    /* Border Radii */
+    --radius-xs: 6px;
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+
+    /* Spacing Scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-7: 32px;
+    --space-8: 40px;
+
+    /* Typography Scale */
+    --text-caption2: 0.6875rem;
+    --text-caption1: 0.75rem;
+    --text-footnote: 0.8125rem;
+    --text-subhead: 0.9375rem;
+    --text-body: 1.0625rem;
+    --text-title3: 1.25rem;
+    --text-title2: 1.375rem;
+    --text-title1: 1.75rem;
+    --text-large-title: 2.125rem;
+
+    /* Font Stacks */
+    --font-system: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+    --font-mono: "SF Mono", "Fira Code", "Cascadia Code", "Consolas", monospace;
+
+    /* Input */
+    --input-bg: rgba(255, 255, 255, 0.04);
+    --input-border: rgba(255, 255, 255, 0.1);
+
+    /* Sidebar */
+    --sidebar-bg: #0a0a0a;
+    --sidebar-border: rgba(255, 255, 255, 0.06);
+
+    /* Header */
+    --header-bg: rgba(10, 10, 10, 0.85);
+
+    /* Table */
+    --table-header-bg: #0e0e0e;
+    --table-row-stripe: rgba(255, 255, 255, 0.015);
+    --table-hover: var(--accent-glow-06);
+
+    /* Select arrow */
+    --select-arrow-url: url("data:image/svg+xml;utf8,<svg fill='%23666' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+}
+
+/* --- Light Theme Overrides --- */
+html.light-mode {
+    --bg-primary: #FAFAF8;
+    --bg-secondary: #FFFFFF;
+    --bg-tertiary: #F5F5F0;
+    --bg-grouped: #F5F5F0;
+    --bg-grouped-secondary: #FFFFFF;
+    --bg-elevated: #FFFFFF;
+
+    --separator: rgba(0, 0, 0, 0.08);
+    --separator-opaque: #E0E0DC;
+
+    --label-primary: #1a1a1a;
+    --label-secondary: rgba(0, 0, 0, 0.55);
+    --label-tertiary: rgba(0, 0, 0, 0.3);
+    --label-quaternary: rgba(0, 0, 0, 0.15);
+
+    --fill-primary: rgba(0, 0, 0, 0.08);
+    --fill-secondary: rgba(0, 0, 0, 0.05);
+    --fill-tertiary: rgba(0, 0, 0, 0.04);
+    --fill-quaternary: rgba(0, 0, 0, 0.02);
+
+    --accent: #E63E00;
+    --accent-hover: #CC3700;
+    --accent-subtle: rgba(230, 62, 0, 0.08);
+    --accent-glow-25: rgba(230, 62, 0, 0.25);
+    --accent-glow-35: rgba(230, 62, 0, 0.35);
+    --accent-glow-20: rgba(230, 62, 0, 0.20);
+    --accent-glow-30: rgba(230, 62, 0, 0.30);
+    --accent-glow-15: rgba(230, 62, 0, 0.15);
+    --accent-glow-08: rgba(230, 62, 0, 0.08);
+    --accent-glow-06: rgba(230, 62, 0, 0.06);
+    --accent-glow-03: rgba(230, 62, 0, 0.03);
+
+    --tint-accent: rgba(230, 62, 0, 0.08);
+    --tint-blue: rgba(0, 122, 255, 0.08);
+    --tint-green: rgba(52, 199, 89, 0.08);
+    --tint-red: rgba(255, 59, 48, 0.08);
+    --tint-orange: rgba(255, 149, 0, 0.08);
+    --tint-purple: rgba(175, 82, 222, 0.08);
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+    --shadow-card: 0 0 0 1px var(--separator), 0 2px 12px rgba(0, 0, 0, 0.06);
+    --shadow-glow: 0 0 20px var(--accent-glow-08);
+
+    --input-bg: rgba(0, 0, 0, 0.03);
+    --input-border: rgba(0, 0, 0, 0.12);
+
+    --sidebar-bg: #FFFFFF;
+    --sidebar-border: rgba(0, 0, 0, 0.06);
+
+    --header-bg: rgba(255, 255, 255, 0.85);
+
+    --table-header-bg: #F0F0EC;
+    --table-row-stripe: rgba(0, 0, 0, 0.015);
+    --table-hover: rgba(230, 62, 0, 0.04);
+
+    --select-arrow-url: url("data:image/svg+xml;utf8,<svg fill='%23888' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+}

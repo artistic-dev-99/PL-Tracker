@@ -1,0 +1,391 @@
+// Settings Tab Component
+export function renderSettingsTabComponent() {
+    return `
+    <section id="settings-tab" class="tab-content hidden">
+        <div class="settings-container">
+            <nav class="settings-sub-topbar">
+                <button class="settings-sub-btn active" data-sub-tab="settings-panel-theme">
+                    <span class="sub-tab-icon">
+                        <svg class="sub-tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                        </svg>
+                    </span> UI & Theme Settings
+                </button>
+                <button class="settings-sub-btn" data-sub-tab="settings-panel-pref">
+                    <span class="sub-tab-icon">
+                        <svg class="sub-tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                    </span> General Preferences
+                </button>
+                <button class="settings-sub-btn" data-sub-tab="settings-panel-security">
+                    <span class="sub-tab-icon">
+                        <svg class="sub-tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                    </span> Security & Sessions
+                </button>
+                <button class="settings-sub-btn" id="settings-nav-admin" data-sub-tab="settings-panel-users" style="display: none;">
+                    <span class="sub-tab-icon">
+                        <svg class="sub-tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                    </span> User Management
+                </button>
+                <button class="settings-sub-btn" data-sub-tab="settings-panel-diag">
+                    <span class="sub-tab-icon">
+                        <svg class="sub-tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
+                        </svg>
+                    </span> Diagnostics & Logs
+                </button>
+            </nav>
+
+            <div class="settings-sub-content">
+                <div id="settings-panel-theme" class="settings-sub-panel active">
+                    <div class="glass-card">
+                        <h3>UI & Theme Customization</h3>
+                        <p class="subtitle">Customize interface colors, typography, glassmorphism, and visual polish.</p>
+
+                        <div class="form-grid-2">
+                            <div class="input-group">
+                                <label for="theme-preset-select">Visual Interface Mode</label>
+                                <select id="theme-preset-select">
+                                    <option value="dark" selected>Superdesign Obsidian Dark (#050505)</option>
+                                    <option value="light">Clean Bright Light</option>
+                                    <option value="system">Follow System Preference</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Primary Color Accent</label>
+                                <div class="accent-swatches-row">
+                                    <button type="button" class="accent-swatch-btn active" data-accent="#FF4500" style="background: #FF4500;" title="Superdesign Orange"></button>
+                                    <button type="button" class="accent-swatch-btn" data-accent="#0A84FF" style="background: #0A84FF;" title="Sapphire Blue"></button>
+                                    <button type="button" class="accent-swatch-btn" data-accent="#30D158" style="background: #30D158;" title="Emerald Green"></button>
+                                    <button type="button" class="accent-swatch-btn" data-accent="#BF5AF2" style="background: #BF5AF2;" title="Cyber Purple"></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2 mt-2">
+                            <div class="input-group">
+                                <label for="theme-font-select">Heading Typography</label>
+                                <select id="theme-font-select">
+                                    <option value="serif" selected>Playfair Display (Editorial Serif)</option>
+                                    <option value="sans">Inter (Modern Clean Sans)</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="pref-statusbar-mode">Status Bar Mode</label>
+                                <select id="pref-statusbar-mode">
+                                    <option value="accent" selected>Accent Match</option>
+                                    <option value="contrast">Mode Tone</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="theme-preview-card mt-3">
+                            <span class="meta-label mb-2">Live UI Component Preview</span>
+                            <div class="preview-components-flex">
+                                <button type="button" class="primary-btn">Primary Action</button>
+                                <button type="button" class="secondary-btn">Secondary</button>
+                                <span class="badge local-badge">Active Badge</span>
+                                <span class="badge admin-badge">System Badge</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="settings-panel-pref" class="settings-sub-panel hidden">
+                    <div class="glass-card">
+                        <h3>Personal Preferences</h3>
+                        <p class="subtitle">Customize entry speeds, default form values, and audio feedback.</p>
+
+                        <div class="form-grid-2">
+                            <div class="input-group">
+                                <label for="pref-default-location">Default Location</label>
+                                <select id="pref-default-location">
+                                    <option value="">None (Always Ask)</option>
+                                    <option value="B1 GF">B1 GF</option>
+                                    <option value="B1 FF">B1 FF</option>
+                                    <option value="B2 GF">B2 GF</option>
+                                    <option value="B2 FF">B2 FF</option>
+                                    <option value="B2 HF">B2 HF</option>
+                                    <option value="B2 EF">B2 EF</option>
+                                    <option value="KW GF">KW GF</option>
+                                    <option value="OS">OS</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="pref-default-customer">Default Customer</label>
+                                <select id="pref-default-customer">
+                                    <option value="">None (Always Ask)</option>
+                                    <option value="AEO">AEO</option>
+                                    <option value="Inditex">Inditex</option>
+                                    <option value="Stacy">Stacy</option>
+                                    <option value="League">League</option>
+                                    <option value="VSS">VSS</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2 mt-2">
+                            <div class="input-group">
+                                <label for="pref-default-pltype">Default PL Type</label>
+                                <select id="pref-default-pltype">
+                                    <option value="">None (Always Ask)</option>
+                                    <option value="New">New</option>
+                                    <option value="Add">Add</option>
+                                    <option value="Update">Update</option>
+                                    <option value="Revise">Revise</option>
+                                    <option value="R2">R2</option>
+                                    <option value="Delete">Delete</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="pref-audio-tone">Unified Audio Tone</label>
+                                <select id="pref-audio-tone">
+                                    <option value="chime" selected>🔔 Crystal Chime</option>
+                                    <option value="classic">🎵 Classic Beep</option>
+                                    <option value="retro">🎷 Retro Pop</option>
+                                    <option value="pulse">🎸 Smooth Pulse</option>
+                                    <option value="mute">🔇 Mute All Tones</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="scan-mode-row mt-3">
+                            <label class="switch-container">
+                                <input type="checkbox" id="pref-enable-beeps" checked>
+                                <span class="slider round"></span>
+                                <span class="switch-label">Enable Audio Feedback Tone</span>
+                            </label>
+                        </div>
+
+                        <div class="scan-mode-row mt-2">
+                            <label class="switch-container">
+                                <input type="checkbox" id="pref-auto-clear" checked>
+                                <span class="slider round"></span>
+                                <span class="switch-label">Auto-Clear Form After Successful Submit</span>
+                            </label>
+                        </div>
+
+                        <button type="button" id="save-preferences-btn" class="primary-btn w-full mt-3">Save Preferences</button>
+                    </div>
+                </div>
+
+                <div id="settings-panel-security" class="settings-sub-panel hidden">
+                    <div class="glass-card">
+                        <h3>Security & Credentials</h3>
+                        <p class="subtitle">Securely update your password and manage active login sessions.</p>
+
+                        <div class="form-grid-2">
+                            <div class="input-group">
+                                <label for="change-pass-current">Current Password</label>
+                                <input type="password" id="change-pass-current">
+                            </div>
+                            <div class="input-group">
+                                <label for="change-pass-new">New Password</label>
+                                <input type="password" id="change-pass-new">
+                            </div>
+                        </div>
+
+                        <div class="input-group mt-2">
+                            <label for="pref-session-timeout">Inactivity Session Timeout</label>
+                            <select id="pref-session-timeout">
+                                <option value="900">15 Minutes</option>
+                                <option value="1800" selected>30 Minutes</option>
+                                <option value="3600">1 Hour</option>
+                                <option value="0">Never (Keep Session Active)</option>
+                            </select>
+                        </div>
+
+                        <button type="button" id="btn-submit-change-pass" class="info-btn w-full mt-3">Update Password</button>
+                        <p id="change-pass-status" class="status-msg text-center mt-2"></p>
+
+                        <div class="border-top-divider mt-4 pt-3">
+                            <h4>Active Office Sessions</h4>
+                            <p class="subtitle text-sm">Below are the devices connected to the local database network.</p>
+                            <div class="table-wrapper mini-table mt-2">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Device IP</th>
+                                            <th>Operator</th>
+                                            <th>Status</th>
+                                            <th>Login Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="session-logs-tbody">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="button" id="btn-kill-sessions" class="secondary-btn w-full mt-2 compact-btn">Deactivate Other Active Devices</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="settings-panel-users" class="settings-sub-panel hidden">
+                    <div class="glass-card mb-4" id="admin-import-card-section" style="display: block; border-left: 4px solid var(--accent);">
+                        <div class="form-row justify-between align-center">
+                            <h3>Excel Data Import</h3>
+                            <span class="badge admin-badge">Admin Feature</span>
+                        </div>
+                        <p class="subtitle">Import raw Excel files (.xlsm or .xlsx) into user databases. Entries will be chronologically sorted and assigned sequence IDs automatically.</p>
+
+                        <div class="db-restore-upload-box mt-3" style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; border: 1px dashed var(--sidebar-border);">
+                            <label for="excel-import-file-main" class="file-upload-label">
+                                <span>Select Excel File (.xlsm / .xlsx):</span>
+                                <input type="file" id="excel-import-file-main" accept=".xlsm,.xlsx">
+                            </label>
+                            <div class="mt-2" style="display: flex; gap: 8px; align-items: center;">
+                                <button type="button" id="btn-submit-excel-import-main" class="primary-btn compact-btn" style="display: none;">Upload & Import Data</button>
+                            </div>
+                            <p id="excel-import-status-main" class="status-msg text-sm mt-2"></p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" id="admin-settings-section" style="display: none;">
+                        <h3>Office User Management</h3>
+                        <p class="subtitle">Admin panel to add, modify, or delete operator accounts and roles.</p>
+
+                        <div class="user-creation-box border-bottom-divider pb-3 mb-3">
+                            <h4>Create Operator Account</h4>
+                            <div class="form-grid-2 mt-2">
+                                <div class="input-group">
+                                    <input type="text" id="admin-new-username" placeholder="Username">
+                                </div>
+                                <div class="input-group">
+                                    <input type="password" id="admin-new-password" placeholder="Password (min 6 chars)">
+                                </div>
+                            </div>
+                            <div class="form-row justify-between align-center mt-2">
+                                <select id="admin-new-role" class="settings-role-select">
+                                    <option value="Local">Local Operator</option>
+                                    <option value="Admin">Administrator</option>
+                                </select>
+                                <button type="button" id="btn-admin-create-user" class="primary-btn compact-btn">Register Account</button>
+                            </div>
+                            <p id="admin-create-user-status" class="status-msg text-center mt-2"></p>
+                        </div>
+
+                        <div class="form-row justify-between align-center mt-3">
+                            <h4>Registered Operators</h4>
+                            <input type="text" id="admin-user-search" placeholder="Filter operators..." class="settings-user-search">
+                        </div>
+                        <div class="table-wrapper mini-table mt-2">
+                            <table id="admin-users-table">
+                                <thead>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Username</th>
+                                        <th>Role</th>
+                                        <th>Reset Password</th>
+                                        <th>Status</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-users-table-body">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="settings-panel-diag" class="settings-sub-panel hidden">
+                    <div class="glass-card">
+                        <h3>Diagnostics & Backups</h3>
+                        <p class="subtitle">System health monitors, database backups, and REST endpoints configuration.</p>
+
+                        <div class="form-grid-2">
+                            <div class="input-group">
+                                <label for="settings-ip-pref">Server Host IP</label>
+                                <input type="text" id="settings-ip-pref">
+                            </div>
+                            <div class="input-group">
+                                <label for="settings-port-pref">Server Port</label>
+                                <input type="number" id="settings-port-pref">
+                            </div>
+                        </div>
+
+                        <div class="form-actions-row mt-3 gap-2">
+                            <button type="button" id="save-server-pref-btn" class="primary-btn compact-btn">Reconnect</button>
+                            <button type="button" id="btn-test-db-connection" class="secondary-btn compact-btn">Test Connection</button>
+                        </div>
+                        <p id="server-pref-status" class="status-msg text-center mt-2"></p>
+
+                        <div class="border-top-divider mt-4 pt-3" id="admin-backup-utility-section" style="display: none;">
+                            <div class="form-row justify-between align-center">
+                                <h4>Database Management</h4>
+                                <span class="badge info-badge" id="db-file-size">Size: -- KB</span>
+                            </div>
+                            <p class="subtitle text-sm">Download backups or restore from an existing database file (.db).</p>
+
+                            <div class="form-actions-row mt-2 gap-2 no-border-padding">
+                                <button type="button" id="btn-download-db-backup" class="info-btn w-full">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon-svg" style="width:16px;height:16px;margin-right:6px;stroke-width:2.5;">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="7 10 12 15 17 10" />
+                                        <line x1="12" y1="15" x2="12" y2="3" />
+                                    </svg>Download DB Backup
+                                </button>
+                            </div>
+
+                            <div class="db-restore-upload-box mt-3">
+                                <label for="db-restore-file" class="file-upload-label">
+                                    <span>Restore DB from file:</span>
+                                    <input type="file" id="db-restore-file" accept=".db">
+                                </label>
+                                <p id="db-restore-status" class="status-msg text-sm mt-1"></p>
+                            </div>
+
+                            <div class="border-top-divider mt-4 pt-3" id="admin-excel-import-section">
+                                <div class="form-row justify-between align-center">
+                                    <h4>Excel Data Import</h4>
+                                    <span class="badge admin-badge">Admin Only</span>
+                                </div>
+                                <p class="subtitle text-sm">Upload raw Excel Packing List data (.xlsm or .xlsx) to import records sorted chronologically into user databases.</p>
+
+                                <div class="db-restore-upload-box mt-3">
+                                    <label for="excel-import-file" class="file-upload-label">
+                                        <span>Select Excel File (.xlsm / .xlsx):</span>
+                                        <input type="file" id="excel-import-file" accept=".xlsm,.xlsx">
+                                    </label>
+                                    <div class="mt-2" style="display: flex; gap: 8px; align-items: center;">
+                                        <button type="button" id="btn-submit-excel-import" class="primary-btn compact-btn" style="display: none;">Upload & Import Data</button>
+                                    </div>
+                                    <p id="excel-import-status" class="status-msg text-sm mt-2"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-top-divider mt-4 pt-3">
+                            <h4>Office Server Activity Logs</h4>
+                            <p class="subtitle text-sm">Real-time server log console.</p>
+                            <div class="console-box mt-2" id="console-logs-viewer">
+                                <div class="console-line">[INFO] Poller service initiated successfully...</div>
+                                <div class="console-line">[OK] Server communication verified on port 5000.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    `;
+}

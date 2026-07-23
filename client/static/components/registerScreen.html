@@ -1,0 +1,59 @@
+<!-- Registration Screen (Requires Admin Authorization) -->
+<div id="register-screen" class="screen hidden">
+    <div class="glass-card fade-in">
+        <h2>User Registration</h2>
+        <p class="subtitle">New account creation requires Administrator authorization.</p>
+
+        <div class="form-grid">
+            <!-- Admin Credentials Verification -->
+            <div class="grid-section">
+                <h3>1. Admin Authorization</h3>
+                <div class="input-group">
+                    <label for="reg-admin-username">Admin Username</label>
+                    <input type="text" id="reg-admin-username" placeholder="Verify Admin Username">
+                    <span class="error-text" id="reg-admin-username-error"></span>
+                </div>
+                <div class="input-group">
+                    <label for="reg-admin-password">Admin Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="reg-admin-password" placeholder="Verify Admin Password">
+                        <button type="button" class="toggle-password-btn" data-target="reg-admin-password">Show</button>
+                    </div>
+                    <span class="error-text" id="reg-admin-password-error"></span>
+                </div>
+            </div>
+
+            <!-- New User Details -->
+            <div class="grid-section">
+                <h3>2. New Account Details</h3>
+                <div class="input-group">
+                    <label for="reg-new-username">New Username</label>
+                    <input type="text" id="reg-new-username" placeholder="Choose username">
+                    <span class="error-text" id="reg-new-username-error"></span>
+                </div>
+                <div class="input-group">
+                    <label for="reg-new-password">New Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="reg-new-password" placeholder="Create password">
+                        <button type="button" class="toggle-password-btn" data-target="reg-new-password">Show</button>
+                    </div>
+                    <span class="error-text" id="reg-new-password-error"></span>
+                </div>
+                <div class="input-group">
+                    <label for="reg-new-role">Role</label>
+                    <select id="reg-new-role">
+                        <option value="Local">Local User</option>
+                        <option value="Admin">Administrator</option>
+                    </select>
+                    <span class="error-text" id="reg-new-role-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions mt-4 justify-center" style="display: flex; gap: 12px; justify-content: center;">
+            <button id="register-btn" class="primary-btn btn-lg px-4">Create User Account</button>
+            <button id="cancel-register-btn" class="secondary-btn btn-lg px-4">Cancel</button>
+        </div>
+        <p class="status-msg text-center mt-3" id="register-status"></p>
+    </div>
+</div>

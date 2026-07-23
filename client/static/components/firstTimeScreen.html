@@ -1,0 +1,26 @@
+<!-- First-Time Admin Setup Screen -->
+<div id="first-time-screen" class="screen hidden">
+    <div class="glass-card compact-card fade-in">
+        <div class="badge admin-badge">First-Time Setup</div>
+        <h2>Create Admin Account</h2>
+        <p class="subtitle">No users found in database. Please create the initial Administrator account.</p>
+
+        <div class="input-group">
+            <label for="admin-setup-username">Username</label>
+            <input type="text" id="admin-setup-username" placeholder="Enter username">
+            <span class="error-text" id="admin-setup-username-error"></span>
+        </div>
+
+        <div class="input-group">
+            <label for="admin-setup-password">Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="admin-setup-password" placeholder="Enter password">
+                <button type="button" class="toggle-password-btn" data-target="admin-setup-password">Show</button>
+            </div>
+            <span class="error-text" id="admin-setup-password-error"></span>
+        </div>
+
+        <button id="create-admin-btn" class="primary-btn">Initialize App</button>
+        <p class="status-msg text-center mt-3" id="first-time-status"></p>
+    </div>
+</div>

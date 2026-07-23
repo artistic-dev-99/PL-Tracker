@@ -1,0 +1,136 @@
+/* ============================================================
+   ACCESSIBILITY & BASE STYLES
+   ============================================================ */
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-system);
+    font-size: var(--text-body);
+    line-height: 1.5;
+    color: var(--label-primary);
+    background-color: var(--bg-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+}
+
+/* MANDATORY SVG ICON DIMENSIONS & HIDDEN DISPLAY FIXES */
+svg {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+[style*="display: none"] {
+    display: none !important;
+}
+
+/* Icon class sizes */
+.logo-icon-svg { width: 42px; height: 42px; stroke: var(--accent); }
+.login-logo-svg { width: 56px; height: 56px; stroke: var(--accent); }
+.ide-logo-svg { width: 22px; height: 22px; stroke: var(--accent); }
+.tab-icon-svg { width: 18px; height: 18px; }
+.toggle-icon-svg { width: 16px; height: 16px; }
+.btn-svg-icon { width: 14px; height: 14px; }
+.subtab-icon { width: 16px; height: 16px; }
+.sub-tab-icon-svg { width: 16px; height: 16px; }
+.filter-icon { width: 16px; height: 16px; }
+.btn-icon-svg { width: 16px; height: 16px; }
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+html.light-mode ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+html.light-mode ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Typography */
+h1 {
+    font-family: var(--font-serif);
+    font-size: var(--text-large-title);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+h2 {
+    font-family: var(--font-serif);
+    font-size: var(--text-title2);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+h3 {
+    font-size: var(--text-title3);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+}
+
+h4 {
+    font-size: var(--text-body);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--label-primary);
+}
+
+p.subtitle {
+    font-size: var(--text-subhead);
+    color: var(--label-secondary);
+    margin-top: 4px;
+    margin-bottom: var(--space-5);
+    line-height: 1.5;
+}
