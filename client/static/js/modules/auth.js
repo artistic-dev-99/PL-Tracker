@@ -40,6 +40,9 @@ export function showScreen(screenId) {
     const screen = document.getElementById(screenId);
     if (screen) screen.classList.remove("hidden");
 }
+if (typeof window !== "undefined") {
+    window.showScreen = showScreen;
+}
 
 export async function handleLogin() {
     const userEl = document.getElementById("login-username");

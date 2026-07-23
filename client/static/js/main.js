@@ -150,6 +150,14 @@ function setupEventHandlers() {
         });
     }
 
+    const loginBtn = document.getElementById("login-btn");
+    if (loginBtn) {
+        loginBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            handleLogin();
+        });
+    }
+
     const regBtn = document.getElementById("go-to-register-btn");
     if (regBtn) regBtn.addEventListener("click", () => window.showScreen("register-screen"));
 
