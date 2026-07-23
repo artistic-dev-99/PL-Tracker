@@ -1,6 +1,7 @@
 /* ============================================================
-   ACCESSIBILITY & BASE STYLES
+   ACCESSIBILITY, RESETS, TYPOGRAPHY & SVG CONSTRAINTS
    ============================================================ */
+
 :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
@@ -38,33 +39,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
 }
-
-/* MANDATORY SVG ICON DIMENSIONS & HIDDEN DISPLAY FIXES */
-svg {
-    display: inline-block;
-    vertical-align: middle;
-    flex-shrink: 0;
-}
-
-.hidden {
-    display: none !important;
-}
-
-[style*="display: none"] {
-    display: none !important;
-}
-
-/* Icon class sizes */
-.logo-icon-svg { width: 42px; height: 42px; stroke: var(--accent); }
-.login-logo-svg { width: 56px; height: 56px; stroke: var(--accent); }
-.ide-logo-svg { width: 22px; height: 22px; stroke: var(--accent); }
-.tab-icon-svg { width: 18px; height: 18px; }
-.toggle-icon-svg { width: 16px; height: 16px; }
-.btn-svg-icon { width: 14px; height: 14px; }
-.subtab-icon { width: 16px; height: 16px; }
-.sub-tab-icon-svg { width: 16px; height: 16px; }
-.filter-icon { width: 16px; height: 16px; }
-.btn-icon-svg { width: 16px; height: 16px; }
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
@@ -134,3 +108,22 @@ p.subtitle {
     margin-bottom: var(--space-5);
     line-height: 1.5;
 }
+
+/* SVG Icon Base & Constraints */
+svg {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.logo-icon-svg { width: 22px; height: 22px; stroke: var(--accent); }
+.login-logo-svg { width: 28px; height: 28px; }
+.ide-logo-svg { width: 20px; height: 20px; stroke: var(--accent); }
+.tab-icon-svg { width: 20px; height: 20px; stroke: currentColor; flex-shrink: 0; }
+.toggle-icon-svg { width: 18px; height: 18px; stroke: currentColor; transition: transform 0.3s ease; }
+.btn-svg-icon { width: 14px; height: 14px; }
+.subtab-icon { width: 18px; height: 18px; }
+.sub-tab-icon-svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+.filter-icon { width: 16px; height: 16px; stroke: var(--accent); }
+.btn-icon-svg { width: 16px; height: 16px; }
+.warning-icon svg { width: 56px; height: 56px; stroke: currentColor; stroke-width: 1.5; fill: none; }

@@ -1,4 +1,6 @@
-/* Spreadsheet Grid, Quick Filter Swatches, Sortable Headers, Pagination */
+/* ============================================================
+   SPREADSHEETS, TABLES, TOOLBARS & PAGINATION
+   ============================================================ */
 
 .spreadsheet-container {
     padding: var(--space-5);
@@ -19,10 +21,91 @@
     border: 1px solid var(--separator);
 }
 
+.toolbar-left {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.selection-status-label {
+    font-size: var(--text-footnote);
+    color: var(--label-secondary);
+    font-weight: 500;
+}
+
+.dropdown-trigger-btn {
+    background: var(--fill-tertiary);
+    color: var(--label-primary);
+    padding: 8px 14px;
+    font-size: var(--text-footnote);
+    border-radius: var(--radius-sm);
+}
+
+.dropdown-trigger-btn:hover {
+    background: var(--fill-secondary);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 6px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--separator);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 50;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.dropdown-menu.hidden {
+    display: none !important;
+}
+
+.dropdown-menu button {
+    background: transparent;
+    color: var(--label-primary);
+    border: none;
+    border-radius: 0;
+    padding: 12px 16px;
+    font-size: var(--text-subhead);
+    text-align: left;
+    justify-content: flex-start;
+    width: 100%;
+    height: auto;
+}
+
+.dropdown-menu button:hover {
+    background: var(--fill-quaternary);
+}
+
+.dropdown-menu .menu-danger-btn {
+    color: var(--system-red);
+}
+
+.dropdown-menu .menu-danger-btn:hover {
+    background: var(--tint-red);
+}
+
 .quick-filter-swatches {
     display: flex;
     align-items: center;
     gap: 4px;
+}
+
+.swatch-label {
+    font-size: var(--text-caption1);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--label-tertiary);
+    margin-right: 6px;
+    letter-spacing: 0.06em;
 }
 
 .swatch-btn {
@@ -64,6 +147,33 @@
     gap: 8px;
 }
 
+.input-inline label {
+    font-size: var(--text-caption1);
+    font-weight: 600;
+    color: var(--label-secondary);
+    text-transform: uppercase;
+}
+
+.input-inline input {
+    padding: 6px 10px;
+    font-size: var(--text-footnote);
+    border-radius: var(--radius-sm);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--label-primary);
+}
+
+.input-inline input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow-15);
+}
+
+.compact-btn {
+    padding: 6px 14px;
+    font-size: var(--text-footnote);
+}
+
 .table-wrapper {
     flex: 1;
     overflow-y: auto;
@@ -94,6 +204,10 @@ th {
     background: var(--table-header-bg);
 }
 
+.numeric-col {
+    font-variant-numeric: tabular-nums;
+}
+
 td {
     padding: var(--space-3);
     border-bottom: 1px solid var(--separator);
@@ -105,10 +219,20 @@ tr:nth-child(even) td {
     background: var(--table-row-stripe);
 }
 
+tr {
+    transition: background 0.15s ease;
+}
+
 tr:hover td {
     background: var(--table-hover);
 }
 
+td input[type="checkbox"]:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Pagination & Sorting */
 .pagination-controls {
     display: flex;
     justify-content: center;
@@ -119,11 +243,32 @@ tr:hover td {
     border-top: 1px solid var(--separator);
 }
 
+.page-info-text {
+    font-size: var(--text-subhead);
+    color: var(--label-secondary);
+    font-weight: 500;
+}
+
 th.sortable {
     cursor: pointer;
     user-select: none;
     position: relative;
     padding-right: 20px !important;
+}
+
+th.sortable::after {
+    content: ' ↕';
+    font-size: var(--text-caption2);
+    color: var(--label-tertiary);
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: color 0.15s ease;
+}
+
+th.sortable:hover {
+    background: var(--fill-quaternary) !important;
 }
 
 th.sortable.asc::after {
