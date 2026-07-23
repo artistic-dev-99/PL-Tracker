@@ -24,6 +24,14 @@ export function initApp() {
     initPyWebViewBridge(checkServerConnection);
 }
 
+export function toggleSidebar() {
+    const sidebar = document.getElementById("app-sidebar");
+    if (sidebar) {
+        sidebar.classList.toggle("collapsed");
+        localStorage.setItem("sidebar_collapsed", sidebar.classList.contains("collapsed"));
+    }
+}
+
 function setupTabNavigation() {
     document.querySelectorAll(".tab-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -34,10 +42,12 @@ function setupTabNavigation() {
 
     const collapseBtn = document.getElementById("sidebar-collapse-btn");
     if (collapseBtn) {
-        collapseBtn.addEventListener("click", () => {
-            const sidebar = document.getElementById("app-sidebar");
-            if (sidebar) sidebar.classList.toggle("collapsed");
-        });
+        collapseBtn.addEventListener("click", toggleSidebar);
+    }
+
+    const menuToggleSidebar = document.getElementById("menu-action-toggle-sidebar");
+    if (menuToggleSidebar) {
+        menuToggleSidebar.addEventListener("click", toggleSidebar);
     }
 }
 
@@ -91,6 +101,11 @@ function loadLocalStorageSettings() {
         if (confirmCb) confirmCb.checked = true;
     }
 
+    if (localStorage.getItem("sidebar_collapsed") === "true") {
+        const sidebar = document.getElementById("app-sidebar");
+        if (sidebar) sidebar.classList.add("collapsed");
+    }
+
     applyTheme();
     applyAccent();
     applyFont();
@@ -98,6 +113,13 @@ function loadLocalStorageSettings() {
 
 function setupShortcutListeners() {
     document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+            const activeTag = document.activeElement ? document.activeElement.tagName : "";
+            if (activeTag !== "INPUT" && activeTag !== "TEXTAREA" && activeTag !== "SELECT") {
+                e.preventDefault();
+                toggleSidebar();
+            }
+        }
         if (e.key === "F11" && !e.ctrlKey) {
             e.preventDefault();
             if (state.currentTab === "entry-form-tab") toggleSearchMode();
@@ -205,6 +227,7 @@ function setupEventHandlers() {
 
 if (typeof window !== "undefined") {
     window.switchTab = switchTab;
+    window.toggleSidebar = toggleSidebar;
     document.addEventListener("DOMContentLoaded", () => {
         mountAllComponents();
         initApp();
