@@ -120,6 +120,25 @@ export function initUserDashboardEventListeners() {
             });
         });
     }
+
+    document.querySelectorAll(".dash-subtab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const subtab = btn.getAttribute("data-dash-subtab");
+            document.querySelectorAll(".dash-subtab-btn").forEach(b => b.classList.remove("active"));
+            document.querySelectorAll(".dash-subtab-content").forEach(c => c.classList.remove("active"));
+
+            btn.classList.add("active");
+            if (subtab === "user-tab") {
+                const uContent = document.getElementById("user-tab-content");
+                if (uContent) uContent.classList.add("active");
+                updateUserDashboardView();
+            } else if (subtab === "location-tab") {
+                const lContent = document.getElementById("location-tab-content");
+                if (lContent) lContent.classList.add("active");
+                renderLocationAnalytics();
+            }
+        });
+    });
 }
 
 export async function refreshDashboardAnalytics() {
@@ -129,6 +148,7 @@ export async function refreshDashboardAnalytics() {
         userDashState.allEntries = Array.isArray(allEntries) ? allEntries : (allEntries.entries || []);
         populateUserFilterDropdown(userDashState.allEntries);
         updateUserDashboardView();
+        renderLocationAnalytics();
     } catch (e) {
         console.error("Dashboard data load error:", e);
     }
@@ -265,7 +285,82 @@ export function renderUserUnifiedVisualization(entries) {
     });
 }
 
+export function renderLocationAnalytics() {
+    const gridContainer = document.getElementById("location-grid-container");
+    const swatchesContainer = document.getElementById("loc-swatches-container");
+    if (!gridContainer) return;
+
+    const entries = userDashState.allEntries || [];
+    const locationMap = {};
+
+    entries.forEach(e => {
+        const loc = e.Location || "Unspecified";
+        if (!locationMap[loc]) locationMap[loc] = [];
+        locationMap[loc].push(e);
+    });
+
+    const locations = Object.keys(locationMap).sort();
+
+    if (swatchesContainer) {
+        if (locations.length === 0) {
+            swatchesContainer.innerHTML = `<span class="text-sm text-secondary">No location data</span>`;
+        } else {
+            swatchesContainer.innerHTML = locations.map(loc => 
+                `<span class="badge local-badge mr-1 mb-1" style="margin-right:4px; margin-bottom:4px;">${escapeHtml(loc)} (${locationMap[loc].length})</span>`
+            ).join("");
+        }
+    }
+
+    if (locations.length === 0) {
+        gridContainer.innerHTML = `
+            <div class="glass-card placeholder-card w-full" style="grid-column: 1 / -1;">
+                <div class="placeholder-msg">No Location Analytics Available</div>
+                <p class="text-secondary text-sm">Submit packing list entries with location data to view site breakdown stats.</p>
+            </div>
+        `;
+        return;
+    }
+
+    gridContainer.innerHTML = locations.map(loc => {
+        const locEntries = locationMap[loc];
+        const totalVolume = locEntries.length;
+        const newCount = locEntries.filter(e => e.PLType === "New").length;
+        const addCount = locEntries.filter(e => e.PLType === "Add").length;
+        const otherCount = totalVolume - newCount - addCount;
+
+        return `
+            <div class="glass-card loc-panel-card">
+                <div class="loc-panel-header">
+                    <div class="loc-title-group">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        <span class="loc-panel-name">${escapeHtml(loc)}</span>
+                    </div>
+                    <span class="badge local-badge">${totalVolume} Entries</span>
+                </div>
+                <div class="loc-metrics-row mt-2">
+                    <div class="loc-metric-item">
+                        <span class="loc-metric-label">New PL</span>
+                        <span class="loc-metric-val">${newCount}</span>
+                    </div>
+                    <div class="loc-metric-item">
+                        <span class="loc-metric-label">Add PL</span>
+                        <span class="loc-metric-val">${addCount}</span>
+                    </div>
+                    <div class="loc-metric-item">
+                        <span class="loc-metric-label">Other</span>
+                        <span class="loc-metric-val">${otherCount}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
 if (typeof window !== "undefined") {
     window.refreshDashboardAnalytics = refreshDashboardAnalytics;
     window.updateUserDashboardView = updateUserDashboardView;
+    window.renderLocationAnalytics = renderLocationAnalytics;
 }

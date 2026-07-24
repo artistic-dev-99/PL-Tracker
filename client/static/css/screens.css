@@ -1308,3 +1308,123 @@ html.light-mode .console-box {
     .stats-row { grid-template-columns: 1fr 1fr; }
     .app-content-header h1 { font-size: var(--text-title2); }
 }
+
+/* --- Login Card & Header Polish --- */
+.login-card {
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 36px 32px;
+    border-radius: var(--radius-xl);
+    background: var(--bg-secondary);
+    border: 1px solid var(--separator);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), var(--shadow-glow);
+    display: flex;
+    flex-direction: column;
+}
+
+.login-header-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.login-logo-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: var(--tint-accent);
+    border: 1px solid var(--accent-glow-20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+}
+
+.login-logo-svg {
+    width: 32px;
+    height: 32px;
+    stroke: var(--accent);
+}
+
+.login-brand-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-title1);
+    font-weight: 700;
+    color: var(--label-primary);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.02em;
+}
+
+.login-header-section .subtitle {
+    font-size: var(--text-subhead);
+    color: var(--label-secondary);
+    margin: 0;
+}
+
+.login-card .input-group {
+    margin-bottom: 18px;
+}
+
+.login-card .input-group label {
+    margin-bottom: 6px;
+}
+
+.login-card .password-wrapper {
+    position: relative;
+}
+
+.login-card .password-wrapper input {
+    padding-right: 64px;
+}
+
+.login-card .toggle-password-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: var(--text-caption1);
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    text-transform: uppercase;
+    padding: 4px 8px;
+}
+
+.login-card .form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 22px;
+}
+
+.login-card .primary-btn {
+    height: 44px;
+    font-size: var(--text-body);
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.register-link {
+    margin-top: 20px;
+    text-align: center;
+    font-size: var(--text-subhead);
+    color: var(--label-secondary);
+}
+
+.register-link a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.register-link a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}

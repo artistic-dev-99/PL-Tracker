@@ -24,6 +24,15 @@ export function initApp() {
     initPyWebViewBridge(checkServerConnection);
 }
 
+export function toggleSidebar() {
+    const sidebar = document.getElementById("app-sidebar");
+    if (sidebar) {
+        sidebar.classList.toggle("collapsed");
+        const isCollapsed = sidebar.classList.contains("collapsed");
+        localStorage.setItem("sidebar_collapsed", isCollapsed ? "true" : "false");
+    }
+}
+
 function setupTabNavigation() {
     document.querySelectorAll(".tab-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -34,10 +43,12 @@ function setupTabNavigation() {
 
     const collapseBtn = document.getElementById("sidebar-collapse-btn");
     if (collapseBtn) {
-        collapseBtn.addEventListener("click", () => {
-            const sidebar = document.getElementById("app-sidebar");
-            if (sidebar) sidebar.classList.toggle("collapsed");
-        });
+        collapseBtn.addEventListener("click", toggleSidebar);
+    }
+
+    const topbarToggleBtn = document.getElementById("menu-action-toggle-sidebar");
+    if (topbarToggleBtn) {
+        topbarToggleBtn.addEventListener("click", toggleSidebar);
     }
 }
 
@@ -91,6 +102,12 @@ function loadLocalStorageSettings() {
         if (confirmCb) confirmCb.checked = true;
     }
 
+    const isSidebarCollapsed = localStorage.getItem("sidebar_collapsed") === "true";
+    const sidebar = document.getElementById("app-sidebar");
+    if (sidebar && isSidebarCollapsed) {
+        sidebar.classList.add("collapsed");
+    }
+
     applyTheme();
     applyAccent();
     applyFont();
@@ -98,6 +115,11 @@ function loadLocalStorageSettings() {
 
 function setupShortcutListeners() {
     document.addEventListener("keydown", (e) => {
+        if ((e.key === "b" || e.key === "B") && e.ctrlKey && !e.shiftKey) {
+            e.preventDefault();
+            toggleSidebar();
+        }
+
         if (e.key === "F11" && !e.ctrlKey) {
             e.preventDefault();
             if (state.currentTab === "entry-form-tab") toggleSearchMode();
